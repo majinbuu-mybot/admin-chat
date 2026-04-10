@@ -275,7 +275,7 @@ async function checkMustChangePass() {
   const { data } = await sb.from('admin_users').select('must_change_password').eq('id', adminId).single();
   if (!data) {
     // ยังไม่มี row → สร้างใหม่
-    await sb.from('admin_users').insert({ id: adminId, username: adminName, must_change_password: false });
+    await sb.from('admin_users').insert({ id: adminId, username: adminName, must_change_password: true });
     startApp();
   } else if (data.must_change_password) {
     hide('login-screen');
