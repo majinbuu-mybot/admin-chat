@@ -15,16 +15,18 @@
     --text: #e8eaf0; --text2: #8b90a7; --text3: #555a72;
   }
   body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .topbar { height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 12px; position: sticky; top: 0; z-index: 10; }
+  .topbar { height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 10px; position: sticky; top: 0; z-index: 10; }
   .topbar-title { font-size: 15px; font-weight: 600; flex: 1; }
   .topbar-btn { font-size: 12px; color: var(--text3); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: 'Sarabun', sans-serif; text-decoration: none; }
-  .topbar-btn:hover { color: var(--text); }
-  select { padding: 5px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 13px; outline: none; cursor: pointer; }
+  select, input[type=date] { padding: 5px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 13px; outline: none; cursor: pointer; }
+  .date-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .custom-range { display: none; align-items: center; gap: 6px; }
+  .custom-range.show { display: flex; }
+  .apply-btn { padding: 5px 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-family: 'Sarabun', sans-serif; font-size: 13px; cursor: pointer; }
 
   .content { padding: 24px; max-width: 1200px; margin: 0 auto; }
   .section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
 
-  /* METRICS */
   .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
   .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
   .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -32,19 +34,16 @@
   .metric-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
   .c-green { color: var(--green); } .c-amber { color: var(--amber); } .c-red { color: var(--red); } .c-accent { color: var(--accent); }
 
-  /* CHARTS */
   .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 24px; }
   .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
   .chart-wrap { position: relative; height: 200px; }
 
-  /* HOURS */
   .hours-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
   .hours-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; margin-top: 12px; }
   .hour-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .hour-bar { width: 100%; border-radius: 3px; min-height: 4px; }
   .hour-label { font-size: 9px; color: var(--text3); font-family: 'IBM Plex Mono', monospace; }
 
-  /* ADMIN TABLE */
   .tables-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
   table { width: 100%; border-collapse: collapse; }
@@ -53,10 +52,10 @@
   tr:last-child td { border-bottom: none; }
   .mono { font-family: 'IBM Plex Mono', monospace; }
   .tag-pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; background: var(--surface2); color: var(--text2); }
-  .drill-btn { font-size: 11px; padding: 3px 10px; background: var(--accent-dim, #2a4a8a); color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; font-family: 'Sarabun', sans-serif; white-space: nowrap; }
+  .drill-btn { font-size: 11px; padding: 3px 10px; background: #2a4a8a; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; font-family: 'Sarabun', sans-serif; }
   .drill-btn:hover { background: var(--accent); color: #fff; }
 
-  /* DETAIL PANEL */
+  /* DETAIL */
   #detail-panel { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
   .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
   .detail-avatar { width: 48px; height: 48px; border-radius: 50%; background: #2a4a8a; color: var(--accent); font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
@@ -73,9 +72,6 @@
   .detail-conv-item { padding: 10px 12px; border-radius: 8px; background: var(--surface2); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
   .detail-conv-name { font-size: 13px; font-weight: 500; }
   .detail-conv-meta { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
-  .detail-conv-right { text-align: right; }
-  .vs-bar { height: 6px; border-radius: 3px; background: var(--border); margin-top: 8px; overflow: hidden; }
-  .vs-fill { height: 100%; border-radius: 3px; }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -85,87 +81,73 @@
 
 <div class="topbar">
   <div class="topbar-title">📊 Performance Dashboard</div>
-  <select id="date-range" onchange="loadAll()">
-    <option value="7">7 วันที่ผ่านมา</option>
-    <option value="30" selected>30 วันที่ผ่านมา</option>
-    <option value="90">90 วันที่ผ่านมา</option>
-  </select>
+  <div class="date-filter">
+    <select id="date-preset" onchange="onPresetChange()">
+      <option value="today">วันนี้</option>
+      <option value="yesterday">เมื่อวาน</option>
+      <option value="7">7 วันที่ผ่านมา</option>
+      <option value="30" selected>30 วันที่ผ่านมา</option>
+      <option value="90">90 วันที่ผ่านมา</option>
+      <option value="custom">Custom...</option>
+    </select>
+    <div class="custom-range" id="custom-range">
+      <input type="date" id="date-from">
+      <span style="color:var(--text3);">ถึง</span>
+      <input type="date" id="date-to">
+      <button class="apply-btn" onclick="loadAll()">ดู</button>
+    </div>
+  </div>
   <a href="index.html" class="topbar-btn">← กลับ Chat</a>
 </div>
 
 <div class="content">
-
-  <!-- METRICS -->
   <div class="metrics-grid">
-    <div class="metric-card"><div class="metric-label">Conversations ทั้งหมด</div><div class="metric-value c-accent" id="m-total">—</div><div class="metric-sub">ในช่วงเวลาที่เลือก</div></div>
+    <div class="metric-card"><div class="metric-label">Conversations ทั้งหมด</div><div class="metric-value c-accent" id="m-total">—</div><div class="metric-sub" id="m-period">—</div></div>
     <div class="metric-card"><div class="metric-label">รอตอบตอนนี้</div><div class="metric-value c-amber" id="m-waiting">—</div><div class="metric-sub">ณ ขณะนี้</div></div>
     <div class="metric-card"><div class="metric-label">Avg First Response</div><div class="metric-value c-green" id="m-frt">—</div><div class="metric-sub">เวลารอจนได้รับการตอบ</div></div>
     <div class="metric-card"><div class="metric-label">Avg Resolution Time</div><div class="metric-value" id="m-rt">—</div><div class="metric-sub">เวลาเฉลี่ยปิดเคส</div></div>
   </div>
 
-  <!-- CHARTS -->
   <div class="charts-row">
     <div class="chart-card"><div class="section-title">Conversations รายวัน</div><div class="chart-wrap"><canvas id="daily-chart"></canvas></div></div>
     <div class="chart-card"><div class="section-title">สัดส่วน Tag</div><div class="chart-wrap"><canvas id="tag-chart"></canvas></div></div>
   </div>
 
-  <!-- HOURS -->
   <div class="hours-card">
     <div class="section-title">ชั่วโมงที่ยุ่งที่สุด</div>
     <div class="hours-grid" id="hours-grid"></div>
   </div>
 
-  <!-- ADMIN + TAG TABLES -->
   <div class="tables-row">
     <div class="table-card">
       <div class="section-title">Performance แอดมิน</div>
-      <table>
-        <thead><tr><th>แอดมิน</th><th>เคสปิด</th><th>Avg FRT</th><th>Avg RT</th><th></th></tr></thead>
-        <tbody id="admin-table"></tbody>
-      </table>
+      <table><thead><tr><th>แอดมิน</th><th>เคสปิด</th><th>Avg FRT</th><th>Avg RT</th><th></th></tr></thead><tbody id="admin-table"></tbody></table>
     </div>
     <div class="table-card">
       <div class="section-title">Top Tags</div>
-      <table>
-        <thead><tr><th>#</th><th>Tag</th><th>จำนวน</th><th>%</th></tr></thead>
-        <tbody id="tag-table"></tbody>
-      </table>
+      <table><thead><tr><th>#</th><th>Tag</th><th>จำนวน</th><th>%</th></tr></thead><tbody id="tag-table"></tbody></table>
     </div>
   </div>
 
-  <!-- DETAIL PANEL -->
   <div id="detail-panel">
     <div class="detail-header">
       <div class="detail-avatar" id="d-avatar">—</div>
-      <div>
-        <div class="detail-name" id="d-name">—</div>
-        <div class="detail-sub" id="d-sub">—</div>
-      </div>
+      <div><div class="detail-name" id="d-name">—</div><div class="detail-sub" id="d-sub">—</div></div>
       <button class="close-detail" onclick="closeDetail()">✕ ปิด</button>
     </div>
-
     <div class="detail-metrics">
       <div class="detail-metric"><div class="detail-metric-label">เคสที่ปิด</div><div class="detail-metric-value c-green" id="d-resolved">—</div></div>
       <div class="detail-metric"><div class="detail-metric-label">Avg First Response</div><div class="detail-metric-value" id="d-frt">—</div></div>
       <div class="detail-metric"><div class="detail-metric-label">Avg Resolution Time</div><div class="detail-metric-value" id="d-rt">—</div></div>
-      <div class="detail-metric"><div class="detail-metric-label">เทียบกับค่าเฉลี่ยทีม</div><div class="detail-metric-value" id="d-vs">—</div></div>
+      <div class="detail-metric"><div class="detail-metric-label">เทียบกับทีม</div><div class="detail-metric-value" id="d-vs">—</div></div>
     </div>
-
     <div class="detail-charts">
-      <div class="chart-card" style="padding:16px;">
-        <div class="section-title">เคสรายวัน</div>
-        <div class="detail-chart-wrap"><canvas id="d-daily-chart"></canvas></div>
-      </div>
-      <div class="chart-card" style="padding:16px;">
-        <div class="section-title">Tag ที่เจอบ่อย</div>
-        <div class="detail-chart-wrap"><canvas id="d-tag-chart"></canvas></div>
-      </div>
+      <div class="chart-card" style="padding:16px;"><div class="section-title">เคสรายวัน</div><div class="detail-chart-wrap"><canvas id="d-daily-chart"></canvas></div></div>
+      <div class="chart-card" style="padding:16px;"><div class="section-title">Tag ที่เจอบ่อย</div><div class="detail-chart-wrap"><canvas id="d-tag-chart"></canvas></div></div>
     </div>
-
     <div class="section-title" style="margin-bottom:12px;">Conversations ล่าสุด</div>
     <div class="detail-conv-list" id="d-conv-list"></div>
   </div>
-
 </div>
 
 <script>
@@ -175,22 +157,66 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 // ========================================
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let dailyChart = null, tagChart = null, dDailyChart = null, dTagChart = null;
-let allConvs = [], allMsgs = [], teamAvgFrt = 0, teamAvgRt = 0;
+let dailyChart=null, tagChart=null, dDailyChart=null, dTagChart=null;
+let allConvs=[], allMsgs=[], teamAvgFrt=0, teamAvgRt=0;
 
-function getDays() { return parseInt(document.getElementById('date-range').value); }
-function getSince() { const d = new Date(); d.setDate(d.getDate() - getDays()); return d.toISOString(); }
+function onPresetChange() {
+  const val = document.getElementById('date-preset').value;
+  const cr = document.getElementById('custom-range');
+  cr.classList.toggle('show', val === 'custom');
+  if (val !== 'custom') loadAll();
+}
+
+function getDateRange() {
+  const preset = document.getElementById('date-preset').value;
+  const now = new Date();
+  let from, to = new Date(now);
+  to.setHours(23,59,59,999);
+
+  if (preset === 'today') {
+    from = new Date(now); from.setHours(0,0,0,0);
+  } else if (preset === 'yesterday') {
+    from = new Date(now); from.setDate(from.getDate()-1); from.setHours(0,0,0,0);
+    to = new Date(now); to.setDate(to.getDate()-1); to.setHours(23,59,59,999);
+  } else if (preset === 'custom') {
+    const f = document.getElementById('date-from').value;
+    const t = document.getElementById('date-to').value;
+    if (!f || !t) return null;
+    from = new Date(f); from.setHours(0,0,0,0);
+    to = new Date(t); to.setHours(23,59,59,999);
+  } else {
+    const days = parseInt(preset);
+    from = new Date(now); from.setDate(from.getDate()-days); from.setHours(0,0,0,0);
+  }
+  return { from: from.toISOString(), to: to.toISOString() };
+}
+
+function getPeriodLabel() {
+  const preset = document.getElementById('date-preset').value;
+  if (preset === 'today') return 'วันนี้';
+  if (preset === 'yesterday') return 'เมื่อวาน';
+  if (preset === 'custom') {
+    const f = document.getElementById('date-from').value;
+    const t = document.getElementById('date-to').value;
+    return f && t ? `${f} ถึง ${t}` : 'custom';
+  }
+  return `${preset} วันที่ผ่านมา`;
+}
 
 async function loadAll() {
-  const since = getSince();
+  const range = getDateRange();
+  if (!range) return;
+  document.getElementById('m-period').textContent = getPeriodLabel();
+
   const [{ data: convs }, { data: msgs }, { data: waiting }] = await Promise.all([
-    sb.from('conversations').select('*').gte('created_at', since),
-    sb.from('messages').select('*').gte('created_at', since),
-    sb.from('conversations').select('id').eq('status', 'waiting')
+    sb.from('conversations').select('*').gte('created_at', range.from).lte('created_at', range.to),
+    sb.from('messages').select('*').gte('created_at', range.from).lte('created_at', range.to),
+    sb.from('conversations').select('id').eq('status','waiting')
   ]);
-  allConvs = convs || []; allMsgs = msgs || [];
-  renderMetrics(allConvs, allMsgs, waiting || []);
-  renderDailyChart(allConvs);
+  allConvs = convs||[]; allMsgs = msgs||[];
+
+  renderMetrics(allConvs, allMsgs, waiting||[]);
+  renderDailyChart(allConvs, range);
   renderTagChart(allConvs);
   renderHours(allMsgs);
   renderAdminTable(allConvs, allMsgs);
@@ -198,65 +224,63 @@ async function loadAll() {
 }
 
 function calcFrt(conv, msgs) {
-  const m = msgs.filter(m => m.conversation_id === conv.id).sort((a,b) => new Date(a.created_at)-new Date(b.created_at));
-  const fc = m.find(x => x.role === 'customer'), fa = m.find(x => x.role === 'admin');
-  if (!fc || !fa) return null;
-  const v = (new Date(fa.created_at) - new Date(fc.created_at)) / 60000;
-  return (v > 0 && v < 1440) ? v : null;
+  const m = msgs.filter(m=>m.conversation_id===conv.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  const fc=m.find(x=>x.role==='customer'), fa=m.find(x=>x.role==='admin');
+  if (!fc||!fa) return null;
+  const v=(new Date(fa.created_at)-new Date(fc.created_at))/60000;
+  return (v>0&&v<1440)?v:null;
 }
-
 function calcRt(conv) {
-  if (!conv.created_at || !conv.updated_at || conv.status !== 'resolved') return null;
-  const v = (new Date(conv.updated_at) - new Date(conv.created_at)) / 60000;
-  return (v > 0 && v < 10080) ? v : null;
+  if (!conv.created_at||!conv.updated_at||conv.status!=='resolved') return null;
+  const v=(new Date(conv.updated_at)-new Date(conv.created_at))/60000;
+  return (v>0&&v<10080)?v:null;
 }
-
-function fmtMin(m) { if (!m) return '—'; return m < 60 ? `${Math.round(m)}m` : `${(m/60).toFixed(1)}h`; }
+function fmtMin(m) { if(!m)return'—'; return m<60?`${Math.round(m)}m`:`${(m/60).toFixed(1)}h`; }
 
 function renderMetrics(convs, msgs, waiting) {
   document.getElementById('m-total').textContent = convs.length;
   document.getElementById('m-waiting').textContent = waiting.length;
-  const resolved = convs.filter(c => c.status === 'resolved');
-  const frts = resolved.map(c => calcFrt(c, msgs)).filter(Boolean);
-  const rts = resolved.map(c => calcRt(c)).filter(Boolean);
-  teamAvgFrt = frts.length ? frts.reduce((a,b)=>a+b,0)/frts.length : 0;
-  teamAvgRt = rts.length ? rts.reduce((a,b)=>a+b,0)/rts.length : 0;
-  document.getElementById('m-frt').textContent = fmtMin(teamAvgFrt || null);
-  document.getElementById('m-rt').textContent = fmtMin(teamAvgRt || null);
+  const resolved = convs.filter(c=>c.status==='resolved');
+  const frts = resolved.map(c=>calcFrt(c,msgs)).filter(Boolean);
+  const rts = resolved.map(c=>calcRt(c)).filter(Boolean);
+  teamAvgFrt = frts.length?frts.reduce((a,b)=>a+b,0)/frts.length:0;
+  teamAvgRt = rts.length?rts.reduce((a,b)=>a+b,0)/rts.length:0;
+  document.getElementById('m-frt').textContent = fmtMin(teamAvgFrt||null);
+  document.getElementById('m-rt').textContent = fmtMin(teamAvgRt||null);
 }
 
-function renderDailyChart(convs) {
-  const days = getDays(); const labels = [], counts = [];
-  for (let i = days-1; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate()-i);
+function renderDailyChart(convs, range) {
+  const from = new Date(range.from), to = new Date(range.to);
+  const labels=[], counts=[];
+  for (let d=new Date(from); d<=to; d.setDate(d.getDate()+1)) {
     const key = d.toISOString().slice(0,10);
-    labels.push(d.toLocaleDateString('th-TH', { day:'numeric', month:'short' }));
-    counts.push(convs.filter(c => c.created_at?.slice(0,10) === key).length);
+    labels.push(d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}));
+    counts.push(convs.filter(c=>c.created_at?.slice(0,10)===key).length);
   }
   if (dailyChart) dailyChart.destroy();
-  dailyChart = new Chart(document.getElementById('daily-chart'), {
-    type: 'bar', data: { labels, datasets: [{ data: counts, backgroundColor: '#4f8ef755', borderColor: '#4f8ef7', borderWidth: 1, borderRadius: 4 }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#555a72',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#555a72',stepSize:1},grid:{color:'#2e3348'}}}}
+  dailyChart = new Chart(document.getElementById('daily-chart'),{
+    type:'bar', data:{labels,datasets:[{data:counts,backgroundColor:'#4f8ef755',borderColor:'#4f8ef7',borderWidth:1,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#555a72',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#555a72',stepSize:1},grid:{color:'#2e3348'}}}}
   });
 }
 
 function renderTagChart(convs) {
-  const tagMap = {}; convs.filter(c=>c.tag).forEach(c=>{ tagMap[c.tag]=(tagMap[c.tag]||0)+1; });
-  const labels = Object.keys(tagMap), data = Object.values(tagMap);
-  const colors = ['#4f8ef7','#3dd68c','#f5a623','#f45b5b','#8774e1','#5cbef5'];
+  const tagMap={}; convs.filter(c=>c.tag).forEach(c=>{tagMap[c.tag]=(tagMap[c.tag]||0)+1;});
+  const labels=Object.keys(tagMap),data=Object.values(tagMap);
+  const colors=['#4f8ef7','#3dd68c','#f5a623','#f45b5b','#8774e1','#5cbef5'];
   if (tagChart) tagChart.destroy();
   if (!labels.length) return;
-  tagChart = new Chart(document.getElementById('tag-chart'), {
-    type: 'doughnut', data: { labels, datasets:[{data, backgroundColor:colors, borderWidth:0}] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{color:'#8b90a7',font:{size:11},boxWidth:12,padding:8}}}}
+  tagChart = new Chart(document.getElementById('tag-chart'),{
+    type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8b90a7',font:{size:11},boxWidth:12,padding:8}}}}
   });
 }
 
 function renderHours(msgs) {
-  const h = Array(24).fill(0);
-  msgs.filter(m=>m.role==='customer').forEach(m=>{ h[new Date(m.created_at).getHours()]++; });
-  const max = Math.max(...h, 1);
-  document.getElementById('hours-grid').innerHTML = h.map((c,i) =>
+  const h=Array(24).fill(0);
+  msgs.filter(m=>m.role==='customer').forEach(m=>{h[new Date(m.created_at).getHours()]++;});
+  const max=Math.max(...h,1);
+  document.getElementById('hours-grid').innerHTML = h.map((c,i)=>
     `<div class="hour-col">
       <div class="hour-bar" style="height:${Math.max(4,Math.round(c/max*60))}px;background:${c===Math.max(...h)?'#f5a623':'#4f8ef7'};opacity:${0.3+(c/max)*0.7};"></div>
       <div class="hour-label">${String(i).padStart(2,'0')}</div>
@@ -264,123 +288,103 @@ function renderHours(msgs) {
 }
 
 function renderAdminTable(convs, msgs) {
-  const adminMap = {};
-  convs.filter(c=>c.assigned_to && c.status==='resolved').forEach(c=>{
-    if (!adminMap[c.assigned_to]) adminMap[c.assigned_to] = { resolved:0, frts:[], rts:[] };
+  const adminMap={};
+  convs.filter(c=>c.assigned_to&&c.status==='resolved').forEach(c=>{
+    if (!adminMap[c.assigned_to]) adminMap[c.assigned_to]={resolved:0,frts:[],rts:[]};
     adminMap[c.assigned_to].resolved++;
-    const frt = calcFrt(c, msgs); if (frt) adminMap[c.assigned_to].frts.push(frt);
-    const rt = calcRt(c); if (rt) adminMap[c.assigned_to].rts.push(rt);
+    const frt=calcFrt(c,msgs); if(frt) adminMap[c.assigned_to].frts.push(frt);
+    const rt=calcRt(c); if(rt) adminMap[c.assigned_to].rts.push(rt);
   });
-  const rows = Object.entries(adminMap).sort((a,b)=>b[1].resolved-a[1].resolved);
-  document.getElementById('admin-table').innerHTML = rows.map(([name, d]) => {
-    const avgFrt = d.frts.length ? d.frts.reduce((a,b)=>a+b,0)/d.frts.length : 0;
-    const avgRt = d.rts.length ? d.rts.reduce((a,b)=>a+b,0)/d.rts.length : 0;
-    return `<tr>
-      <td><strong>${esc(name)}</strong></td>
-      <td class="mono c-green">${d.resolved}</td>
-      <td class="mono">${fmtMin(avgFrt||null)}</td>
-      <td class="mono">${fmtMin(avgRt||null)}</td>
-      <td><button class="drill-btn" onclick="openDetail('${esc(name)}')">ดูรายละเอียด</button></td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px;">ยังไม่มีข้อมูล</td></tr>';
+  const rows=Object.entries(adminMap).sort((a,b)=>b[1].resolved-a[1].resolved);
+  document.getElementById('admin-table').innerHTML = rows.map(([name,d])=>{
+    const avgFrt=d.frts.length?d.frts.reduce((a,b)=>a+b,0)/d.frts.length:0;
+    const avgRt=d.rts.length?d.rts.reduce((a,b)=>a+b,0)/d.rts.length:0;
+    return `<tr><td><strong>${esc(name)}</strong></td><td class="mono c-green">${d.resolved}</td><td class="mono">${fmtMin(avgFrt||null)}</td><td class="mono">${fmtMin(avgRt||null)}</td><td><button class="drill-btn" onclick="openDetail('${esc(name)}')">ดูรายละเอียด</button></td></tr>`;
+  }).join('')||'<tr><td colspan="5" style="color:var(--text3);text-align:center;padding:20px;">ยังไม่มีข้อมูล</td></tr>';
 }
 
 function renderTagTable(convs) {
-  const tagMap = {}; convs.filter(c=>c.tag).forEach(c=>{ tagMap[c.tag]=(tagMap[c.tag]||0)+1; });
-  const total = Object.values(tagMap).reduce((a,b)=>a+b,0)||1;
-  const rows = Object.entries(tagMap).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('tag-table').innerHTML = rows.map(([tag,count],i) =>
+  const tagMap={}; convs.filter(c=>c.tag).forEach(c=>{tagMap[c.tag]=(tagMap[c.tag]||0)+1;});
+  const total=Object.values(tagMap).reduce((a,b)=>a+b,0)||1;
+  const rows=Object.entries(tagMap).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('tag-table').innerHTML = rows.map(([tag,count],i)=>
     `<tr><td class="mono" style="color:var(--text3);">${i+1}</td><td><span class="tag-pill">${esc(tag)}</span></td><td class="mono">${count}</td><td style="color:var(--text3);">${Math.round(count/total*100)}%</td></tr>`
-  ).join('') || '<tr><td colspan="4" style="color:var(--text3);text-align:center;padding:20px;">ยังไม่มีข้อมูล</td></tr>';
+  ).join('')||'<tr><td colspan="4" style="color:var(--text3);text-align:center;padding:20px;">ยังไม่มีข้อมูล</td></tr>';
 }
 
-// DRILL DOWN
 async function openDetail(name) {
   const panel = document.getElementById('detail-panel');
-  panel.style.display = 'block';
-  panel.scrollIntoView({ behavior: 'smooth' });
-
-  const myConvs = allConvs.filter(c => c.assigned_to === name && c.status === 'resolved');
-  const frts = myConvs.map(c => calcFrt(c, allMsgs)).filter(Boolean);
-  const rts = myConvs.map(c => calcRt(c)).filter(Boolean);
-  const avgFrt = frts.length ? frts.reduce((a,b)=>a+b,0)/frts.length : 0;
-  const avgRt = rts.length ? rts.reduce((a,b)=>a+b,0)/rts.length : 0;
-
-  // header
-  document.getElementById('d-avatar').textContent = name.slice(0,2).toUpperCase();
-  document.getElementById('d-name').textContent = name;
-  document.getElementById('d-sub').textContent = `${myConvs.length} เคสที่ปิดในช่วงเวลาที่เลือก`;
-
-  // metrics
-  document.getElementById('d-resolved').textContent = myConvs.length;
-  document.getElementById('d-frt').textContent = fmtMin(avgFrt||null);
-  document.getElementById('d-rt').textContent = fmtMin(avgRt||null);
-
-  // vs team
-  if (teamAvgFrt && avgFrt) {
-    const diff = ((avgFrt - teamAvgFrt) / teamAvgFrt * 100);
-    const el = document.getElementById('d-vs');
-    if (diff < 0) { el.textContent = `เร็วกว่าทีม ${Math.abs(Math.round(diff))}%`; el.className = 'detail-metric-value c-green'; }
-    else if (diff > 0) { el.textContent = `ช้ากว่าทีม ${Math.round(diff)}%`; el.className = 'detail-metric-value c-amber'; }
-    else { el.textContent = 'เท่ากับค่าเฉลี่ย'; el.className = 'detail-metric-value'; }
-  } else { document.getElementById('d-vs').textContent = '—'; }
-
+  panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth'});
+  const myConvs = allConvs.filter(c=>c.assigned_to===name&&c.status==='resolved');
+  const frts=myConvs.map(c=>calcFrt(c,allMsgs)).filter(Boolean);
+  const rts=myConvs.map(c=>calcRt(c)).filter(Boolean);
+  const avgFrt=frts.length?frts.reduce((a,b)=>a+b,0)/frts.length:0;
+  const avgRt=rts.length?rts.reduce((a,b)=>a+b,0)/rts.length:0;
+  document.getElementById('d-avatar').textContent=name.slice(0,2).toUpperCase();
+  document.getElementById('d-name').textContent=name;
+  document.getElementById('d-sub').textContent=`${myConvs.length} เคสที่ปิดในช่วงเวลาที่เลือก`;
+  document.getElementById('d-resolved').textContent=myConvs.length;
+  document.getElementById('d-frt').textContent=fmtMin(avgFrt||null);
+  document.getElementById('d-rt').textContent=fmtMin(avgRt||null);
+  if (teamAvgFrt&&avgFrt) {
+    const diff=((avgFrt-teamAvgFrt)/teamAvgFrt*100);
+    const el=document.getElementById('d-vs');
+    if (diff<0) {el.textContent=`เร็วกว่าทีม ${Math.abs(Math.round(diff))}%`;el.className='detail-metric-value c-green';}
+    else if (diff>0) {el.textContent=`ช้ากว่าทีม ${Math.round(diff)}%`;el.className='detail-metric-value c-amber';}
+    else {el.textContent='เท่ากับค่าเฉลี่ย';el.className='detail-metric-value';}
+  }
   // daily chart
-  const days = getDays(); const labels = [], counts = [];
-  for (let i = days-1; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const key = d.toISOString().slice(0,10);
-    labels.push(d.toLocaleDateString('th-TH', { day:'numeric', month:'short' }));
-    counts.push(myConvs.filter(c => c.updated_at?.slice(0,10) === key).length);
+  const range=getDateRange();
+  const from=new Date(range.from),to=new Date(range.to);
+  const labels=[],counts=[];
+  for(let d=new Date(from);d<=to;d.setDate(d.getDate()+1)){
+    const key=d.toISOString().slice(0,10);
+    labels.push(d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}));
+    counts.push(myConvs.filter(c=>c.updated_at?.slice(0,10)===key).length);
   }
-  if (dDailyChart) dDailyChart.destroy();
-  dDailyChart = new Chart(document.getElementById('d-daily-chart'), {
-    type: 'line', data: { labels, datasets:[{ data:counts, borderColor:'#3dd68c', backgroundColor:'#3dd68c22', fill:true, tension:0.4, pointRadius:2 }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#555a72',font:{size:9}},grid:{display:false}},y:{ticks:{color:'#555a72',stepSize:1},grid:{color:'#2e3348'}}}}
+  if(dDailyChart)dDailyChart.destroy();
+  dDailyChart=new Chart(document.getElementById('d-daily-chart'),{
+    type:'line',data:{labels,datasets:[{data:counts,borderColor:'#3dd68c',backgroundColor:'#3dd68c22',fill:true,tension:0.4,pointRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#555a72',font:{size:9}},grid:{display:false}},y:{ticks:{color:'#555a72',stepSize:1},grid:{color:'#2e3348'}}}}
   });
-
   // tag chart
-  const tagMap = {}; myConvs.filter(c=>c.tag).forEach(c=>{ tagMap[c.tag]=(tagMap[c.tag]||0)+1; });
-  const tLabels = Object.keys(tagMap), tData = Object.values(tagMap);
-  const colors = ['#4f8ef7','#3dd68c','#f5a623','#f45b5b','#8774e1','#5cbef5'];
-  if (dTagChart) dTagChart.destroy();
-  if (tLabels.length) {
-    dTagChart = new Chart(document.getElementById('d-tag-chart'), {
-      type: 'doughnut', data: { labels:tLabels, datasets:[{data:tData, backgroundColor:colors, borderWidth:0}] },
-      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{color:'#8b90a7',font:{size:10},boxWidth:10,padding:6}}}}
-    });
-  }
-
-  // recent convs
-  const recent = [...myConvs].sort((a,b) => new Date(b.updated_at)-new Date(a.updated_at)).slice(0, 10);
-  document.getElementById('d-conv-list').innerHTML = recent.map(c => {
-    const rt = calcRt(c); const frt = calcFrt(c, allMsgs);
-    return `<div class="detail-conv-item">
-      <div>
-        <div class="detail-conv-name">${esc(c.display_name || c.user_id)}</div>
-        <div class="detail-conv-meta">${c.tag ? `[${esc(c.tag)}] · ` : ''}${fmtTime(c.updated_at)}</div>
-      </div>
-      <div class="detail-conv-right">
-        <div style="font-size:11px;color:var(--text3);">FRT: <span style="color:var(--text2);">${fmtMin(frt)}</span></div>
-        <div style="font-size:11px;color:var(--text3);">RT: <span style="color:var(--text2);">${fmtMin(rt)}</span></div>
-      </div>
+  const tagMap={}; myConvs.filter(c=>c.tag).forEach(c=>{tagMap[c.tag]=(tagMap[c.tag]||0)+1;});
+  const tL=Object.keys(tagMap),tD=Object.values(tagMap);
+  const colors=['#4f8ef7','#3dd68c','#f5a623','#f45b5b','#8774e1','#5cbef5'];
+  if(dTagChart)dTagChart.destroy();
+  if(tL.length) dTagChart=new Chart(document.getElementById('d-tag-chart'),{
+    type:'doughnut',data:{labels:tL,datasets:[{data:tD,backgroundColor:colors,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8b90a7',font:{size:10},boxWidth:10,padding:6}}}}
+  });
+  // recent
+  const recent=[...myConvs].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at)).slice(0,10);
+  document.getElementById('d-conv-list').innerHTML=recent.map(c=>{
+    const rt=calcRt(c),frt=calcFrt(c,allMsgs);
+    return`<div class="detail-conv-item">
+      <div><div class="detail-conv-name">${esc(c.nickname||c.display_name||c.user_id)}</div><div class="detail-conv-meta">${c.tag?`[${esc(c.tag)}] · `:''}${fmtTime(c.updated_at)}</div></div>
+      <div style="text-align:right;"><div style="font-size:11px;color:var(--text3);">FRT: <span style="color:var(--text2);">${fmtMin(frt)}</span></div><div style="font-size:11px;color:var(--text3);">RT: <span style="color:var(--text2);">${fmtMin(rt)}</span></div></div>
     </div>`;
-  }).join('') || '<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">ไม่มีข้อมูล</div>';
+  }).join('')||'<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">ไม่มีข้อมูล</div>';
 }
 
-function closeDetail() {
-  document.getElementById('detail-panel').style.display = 'none';
-}
+function closeDetail() { document.getElementById('detail-panel').style.display='none'; }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmtTime(ts) {
-  if (!ts) return '';
-  const d = new Date(ts), now = new Date(), diff = now - d;
-  if (diff < 60000) return 'เมื่อกี้';
-  if (diff < 3600000) return `${Math.floor(diff/60000)} นาทีที่แล้ว`;
-  if (diff < 86400000) return d.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
-  return d.toLocaleDateString('th-TH', { day:'numeric', month:'short' });
+  if(!ts)return'';
+  const d=new Date(ts),now=new Date(),diff=now-d;
+  if(diff<60000)return'เมื่อกี้';
+  if(diff<3600000)return`${Math.floor(diff/60000)} นาทีที่แล้ว`;
+  if(diff<86400000)return d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});
 }
+
+// set default dates
+const today = new Date().toISOString().slice(0,10);
+const month = new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+document.getElementById('date-from').value = month;
+document.getElementById('date-to').value = today;
 
 window.onload = loadAll;
 </script>
