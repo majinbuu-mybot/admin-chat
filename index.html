@@ -12,7 +12,7 @@
     --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --border: #2e3348;
     --accent: #4f8ef7; --accent-dim: #2a4a8a; --green: #3dd68c; --amber: #f5a623;
     --red: #f45b5b; --text: #e8eaf0; --text2: #8b90a7; --text3: #555a72;
-    --customer-bg: #1e2235; --admin-bg: #1a3a5c;
+    --customer-bg: #1e2235; --admin-bg: #1a3a5c; --note-bg: #2a2a1a;
   }
   body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
@@ -27,15 +27,14 @@
   .field input:focus { border-color: var(--accent); }
   .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
   .error-msg { color: var(--red); font-size: 13px; margin-top: 10px; text-align: center; display: none; }
-  .hint { font-size: 12px; color: var(--text3); margin-top: 12px; text-align: center; }
 
   /* APP */
   #app { display: none; flex-direction: column; height: 100vh; }
-  .topbar { height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; }
+  .topbar { height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 10px; flex-shrink: 0; }
   .topbar-title { font-size: 15px; font-weight: 600; flex: 1; }
-  .online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
-  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
   .topbar-admin { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
   .topbar-btn { font-size: 12px; color: var(--text3); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: 'Sarabun', sans-serif; text-decoration: none; }
   .topbar-btn:hover { color: var(--text); }
   .main { display: flex; flex: 1; overflow: hidden; }
@@ -45,28 +44,22 @@
   .sidebar-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .sidebar-header span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); }
   .conv-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--accent-dim); color: var(--accent); padding: 2px 8px; border-radius: 10px; }
-
-  /* SEARCH + FILTER */
   .sidebar-tools { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
   .search-input { width: 100%; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 13px; outline: none; }
   .search-input:focus { border-color: var(--accent); }
   .filter-tabs { display: flex; gap: 4px; }
-  .filter-tab { flex: 1; padding: 5px 4px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text3); font-family: 'Sarabun', sans-serif; font-size: 11px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .filter-tab { flex: 1; padding: 5px 4px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text3); font-family: 'Sarabun', sans-serif; font-size: 11px; cursor: pointer; text-align: center; }
   .filter-tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-
-  /* ONLINE ADMINS */
-  .online-admins { padding: 8px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .online-admins { padding: 6px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 32px; }
   .online-label { font-size: 10px; color: var(--text3); }
-  .admin-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
-  .admin-avatar-tooltip { position: relative; }
-
+  .admin-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: default; }
   .conv-list { overflow-y: auto; flex: 1; }
-  .conv-item { padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; position: relative; }
+  .conv-item { padding: 11px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; position: relative; }
   .conv-item:hover { background: var(--surface2); }
   .conv-item.active { background: var(--surface2); border-left: 3px solid var(--accent); padding-left: 11px; }
-  .conv-name-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-  .conv-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
-  .conv-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .conv-name-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .conv-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+  .conv-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
   .conv-time { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); }
   .conv-msg { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
   .unread-badge { background: var(--red); color: #fff; font-size: 11px; font-weight: 600; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
@@ -74,66 +67,112 @@
   .badge-waiting { background: rgba(245,166,35,0.15); color: var(--amber); }
   .badge-active { background: rgba(61,214,140,0.15); color: var(--green); }
   .badge-resolved { background: rgba(139,144,167,0.1); color: var(--text3); }
+  .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .p-urgent { background: var(--red); }
+  .p-normal { background: var(--amber); }
+  .p-low { background: var(--green); }
 
   /* CHAT */
   .chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
-  .chat-header { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .chat-header-info { }
-  .chat-header-name { font-size: 15px; font-weight: 600; }
+  .chat-header { padding: 11px 20px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; gap: 10px; }
+  .chat-header-info { flex: 1; min-width: 0; }
+  .chat-header-name { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .edit-name-btn { font-size: 12px; color: var(--text3); cursor: pointer; background: none; border: none; padding: 0; }
+  .edit-name-btn:hover { color: var(--accent); }
   .chat-header-meta { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
-  .chat-header-actions { display: flex; gap: 8px; align-items: center; }
+  .chat-header-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .hdr-btn { font-size: 11px; padding: 5px 10px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text2); cursor: pointer; font-family: 'Sarabun', sans-serif; white-space: nowrap; }
+  .hdr-btn:hover { color: var(--text); border-color: var(--text2); }
   .resolve-btn { font-size: 12px; padding: 6px 14px; background: rgba(61,214,140,0.1); color: var(--green); border: 1px solid rgba(61,214,140,0.3); border-radius: 6px; cursor: pointer; font-family: 'Sarabun', sans-serif; }
-  .history-btn { font-size: 12px; padding: 6px 12px; background: none; color: var(--text2); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-family: 'Sarabun', sans-serif; }
 
-  .messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
-  .history-divider { text-align: center; font-size: 11px; color: var(--text3); padding: 8px 0; border-top: 1px dashed var(--border); margin: 4px 0; }
-  .msg-row { display: flex; gap: 10px; max-width: 75%; }
+  /* SEARCH IN CONV */
+  .conv-search-bar { padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: none; }
+  .conv-search-bar input { width: 100%; padding: 7px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 13px; outline: none; }
+  .conv-search-bar input:focus { border-color: var(--accent); }
+
+  .messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .history-divider { text-align: center; font-size: 11px; color: var(--text3); padding: 6px 0; border-top: 1px dashed var(--border); margin: 4px 0; }
+  .msg-row { display: flex; gap: 10px; max-width: 78%; }
   .msg-row.customer { align-self: flex-start; }
   .msg-row.admin { align-self: flex-end; flex-direction: row-reverse; }
   .msg-row.ai { align-self: flex-start; }
+  .msg-row.note { align-self: center; max-width: 90%; }
   .msg-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; margin-top: 2px; }
   .av-customer { background: var(--surface2); color: var(--text2); }
   .av-admin { background: var(--accent-dim); color: var(--accent); }
   .av-ai { background: rgba(61,214,140,0.15); color: var(--green); }
+  .av-note { background: rgba(245,166,35,0.15); color: var(--amber); }
   .msg-bubble { padding: 9px 13px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
   .bc { background: var(--customer-bg); border-bottom-left-radius: 4px; }
   .ba { background: var(--admin-bg); border-bottom-right-radius: 4px; }
   .bai { background: rgba(61,214,140,0.08); border: 1px solid rgba(61,214,140,0.2); border-bottom-left-radius: 4px; }
-  .msg-meta { font-size: 10px; color: var(--text3); margin-top: 3px; font-family: 'IBM Plex Mono', monospace; }
-  .msg-row.admin .msg-meta { text-align: right; }
+  .bn { background: var(--note-bg); border: 1px dashed rgba(245,166,35,0.4); border-radius: 8px; width: 100%; font-size: 13px; color: var(--amber); }
+  .msg-img { max-width: 200px; max-height: 200px; border-radius: 8px; cursor: pointer; display: block; }
+  .msg-meta { font-size: 10px; color: var(--text3); margin-top: 3px; font-family: 'IBM Plex Mono', monospace; display: flex; align-items: center; gap: 4px; }
+  .msg-row.admin .msg-meta { justify-content: flex-end; }
+  .read-tick { font-size: 10px; color: var(--accent); }
+  .typing-indicator { align-self: flex-start; display: none; padding: 8px 14px; background: var(--customer-bg); border-radius: 12px; border-bottom-left-radius: 4px; }
+  .typing-dots { display: flex; gap: 4px; align-items: center; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); animation: bounce 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
+  .highlight { background: rgba(245,166,35,0.3); border-radius: 3px; }
   .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text3); gap: 12px; }
 
-  /* QUICK REPLY */
-  .quick-replies { padding: 8px 20px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; background: var(--surface); }
-  .qr-btn { padding: 5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; color: var(--text2); font-family: 'Sarabun', sans-serif; font-size: 12px; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  /* QUICK REPLY + INPUT */
+  .quick-replies { padding: 7px 20px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; background: var(--surface); }
+  .qr-btn { padding: 4px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; color: var(--text2); font-family: 'Sarabun', sans-serif; font-size: 12px; cursor: pointer; white-space: nowrap; }
   .qr-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* INPUT */
-  .chat-input-area { padding: 12px 20px; background: var(--surface); border-top: 1px solid var(--border); flex-shrink: 0; }
-  .input-row { display: flex; gap: 10px; align-items: flex-end; }
-  .chat-input { flex: 1; padding: 11px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 14px; resize: none; outline: none; max-height: 120px; line-height: 1.5; }
+  .chat-input-area { padding: 10px 20px; background: var(--surface); border-top: 1px solid var(--border); flex-shrink: 0; }
+  .input-mode-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .mode-tab { padding: 3px 12px; background: none; border: 1px solid var(--border); border-radius: 16px; color: var(--text3); font-family: 'Sarabun', sans-serif; font-size: 12px; cursor: pointer; }
+  .mode-tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .mode-tab.note-tab.active { background: rgba(245,166,35,0.15); border-color: var(--amber); color: var(--amber); }
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-input { flex: 1; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 14px; resize: none; outline: none; max-height: 120px; line-height: 1.5; }
   .chat-input:focus { border-color: var(--accent); }
-  .send-btn { padding: 11px 20px; background: var(--accent); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; white-space: nowrap; }
+  .chat-input.note-mode { border-color: rgba(245,166,35,0.4); }
+  .send-btn { padding: 10px 18px; background: var(--accent); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; white-space: nowrap; }
   .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .send-btn.note-send { background: rgba(245,166,35,0.8); }
+  .attach-btn { padding: 10px 12px; background: none; border: 1px solid var(--border); border-radius: 10px; color: var(--text2); cursor: pointer; font-size: 16px; }
+  .attach-btn:hover { border-color: var(--accent); color: var(--accent); }
 
   /* MODALS */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; }
   .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 380px; }
   .modal-box h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
   .modal-box p { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
   .tag-options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-  .tag-btn { padding: 7px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text2); font-family: 'Sarabun', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.15s; }
-  .tag-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tag-btn { padding: 7px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text2); font-family: 'Sarabun', sans-serif; font-size: 13px; cursor: pointer; }
   .tag-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .modal-actions { display: flex; gap: 10px; }
   .btn-confirm { flex: 1; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 14px; cursor: pointer; }
   .btn-skip { padding: 10px 16px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-family: 'Sarabun', sans-serif; font-size: 14px; cursor: pointer; }
+  .modal-input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
+  .modal-input:focus { border-color: var(--accent); }
+
+  /* PRIORITY BADGE */
+  .priority-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+  .priority-urgent { background: rgba(244,91,91,0.15); color: var(--red); }
+  .priority-normal { background: rgba(245,166,35,0.15); color: var(--amber); }
+  .priority-low { background: rgba(61,214,140,0.1); color: var(--green); }
+
+  /* IMAGE VIEWER */
+  #img-viewer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; cursor: pointer; }
+  #img-viewer img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 </style>
 </head>
 <body>
+
+<!-- IMAGE VIEWER -->
+<div id="img-viewer" onclick="this.style.display='none'">
+  <img id="img-viewer-src" src="" alt="">
+</div>
 
 <!-- TAG MODAL -->
 <div class="modal-overlay" id="tag-modal">
@@ -144,6 +183,19 @@
     <div class="modal-actions">
       <button class="btn-skip" onclick="confirmResolve(null)">ข้ามไม่เลือก</button>
       <button class="btn-confirm" onclick="confirmResolve(selectedTag)">บันทึกและปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT NICKNAME MODAL -->
+<div class="modal-overlay" id="nickname-modal">
+  <div class="modal-box">
+    <h3>เปลี่ยนชื่อลูกค้า</h3>
+    <p>ชื่อนี้จะแสดงแทนชื่อ LINE ของลูกค้า</p>
+    <input class="modal-input" id="nickname-input" placeholder="ชื่อที่ต้องการ..." />
+    <div class="modal-actions">
+      <button class="btn-skip" onclick="closeModal('nickname-modal')">ยกเลิก</button>
+      <button class="btn-confirm" onclick="saveNickname()">บันทึก</button>
     </div>
   </div>
 </div>
@@ -160,13 +212,13 @@
   </div>
 </div>
 
-<!-- CHANGE PASSWORD (first login) -->
+<!-- CHANGE PASSWORD -->
 <div class="center-screen" id="change-pass-screen" style="display:none;">
   <div class="card">
     <h1>ตั้ง Password ใหม่</h1>
     <p>กรุณาตั้ง password ใหม่ก่อนเริ่มใช้งาน</p>
     <div class="field"><label>Password ใหม่</label><input type="password" id="new-pass" placeholder="อย่างน้อย 8 ตัวอักษร"></div>
-    <div class="field"><label>ยืนยัน Password</label><input type="password" id="confirm-pass" placeholder="พิมพ์ซ้ำอีกครั้ง" onkeydown="if(event.key==='Enter')doChangePass()"></div>
+    <div class="field"><label>ยืนยัน Password</label><input type="password" id="confirm-pass" onkeydown="if(event.key==='Enter')doChangePass()"></div>
     <button class="btn-primary" onclick="doChangePass()">บันทึก</button>
     <div class="error-msg" id="change-pass-error">Password ไม่ตรงกัน หรือสั้นเกินไป</div>
   </div>
@@ -191,36 +243,32 @@
       <div class="sidebar-tools">
         <input class="search-input" id="search-input" placeholder="ค้นหาชื่อหรือข้อความ..." oninput="filterConvs()">
         <div class="filter-tabs">
-          <button class="filter-tab active" onclick="setFilter('all', this)">ทั้งหมด</button>
-          <button class="filter-tab" onclick="setFilter('waiting', this)">รอตอบ</button>
-          <button class="filter-tab" onclick="setFilter('active', this)">กำลังคุย</button>
-          <button class="filter-tab" onclick="setFilter('resolved', this)">เสร็จแล้ว</button>
+          <button class="filter-tab active" onclick="setFilter('all',this)">ทั้งหมด</button>
+          <button class="filter-tab" onclick="setFilter('waiting',this)">รอตอบ</button>
+          <button class="filter-tab" onclick="setFilter('active',this)">คุยอยู่</button>
+          <button class="filter-tab" onclick="setFilter('resolved',this)">เสร็จ</button>
         </div>
       </div>
-      <div class="online-admins" id="online-admins">
-        <span class="online-label">ออนไลน์:</span>
-      </div>
-      <div class="conv-list" id="conv-list">
-        <div style="padding:20px;text-align:center;color:var(--text3);font-size:13px;">กำลังโหลด...</div>
-      </div>
+      <div class="online-admins" id="online-admins"><span class="online-label">ออนไลน์:</span></div>
+      <div class="conv-list" id="conv-list"><div style="padding:20px;text-align:center;color:var(--text3);font-size:13px;">กำลังโหลด...</div></div>
     </div>
     <div class="chat-area" id="chat-area">
-      <div class="empty-state">
-        <div style="font-size:40px;opacity:0.3;">💬</div>
-        <div>เลือก conversation เพื่อเริ่มตอบ</div>
-      </div>
+      <div class="empty-state"><div style="font-size:40px;opacity:0.3;">💬</div><div>เลือก conversation เพื่อเริ่มตอบ</div></div>
     </div>
   </div>
 </div>
+
+<input type="file" id="file-input" accept="image/*,.pdf,.doc,.docx" style="display:none" onchange="handleFileUpload(event)">
 
 <script>
 // ========================================
 const SUPABASE_URL = 'https://difuopwxjyclghlgmvhm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZnVvcHd4anljbGdobGdtdmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mzg0NTEsImV4cCI6MjA5MTMxNDQ1MX0.nXxVxpYn34BkuGOuznAa6Hft721gZaj1jHSm5D2zm1A';
 const N8N_SEND_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send';
+const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
 const EMAIL_DOMAIN = '@admin.local';
-const TAGS = ['สอบถามราคา', 'สอบถามสินค้า', 'ปัญหาการส่ง', 'เปลี่ยน/คืนสินค้า', 'ชำระเงิน', 'อื่นๆ'];
-const QUICK_REPLIES = ['รับทราบค่ะ', 'รอสักครู่นะคะ', 'ขอบคุณที่ติดต่อมาค่ะ', 'กำลังตรวจสอบให้ค่ะ', 'ได้เลยค่ะ'];
+const TAGS = ['สอบถามราคา','สอบถามสินค้า','ปัญหาการส่ง','เปลี่ยน/คืนสินค้า','ชำระเงิน','อื่นๆ'];
+const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','ขอบคุณที่ติดต่อมาค่ะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ'];
 // ========================================
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -230,29 +278,29 @@ let adminName = '', adminId = null;
 let allConvs = [], filterStatus = 'all', searchText = '';
 let unreadCounts = {}, selectedTag = null;
 let notifyPermission = false;
-let onlineAdmins = {};
+let isNoteMode = false;
+let showingHistory = false;
+let typingTimeout = null;
+let convSearchActive = false;
 
-// SOUND
+// SOUND + NOTIFY
 function playSound() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
     const o = ctx.createOscillator(), g = ctx.createGain();
     o.connect(g); g.connect(ctx.destination);
     o.frequency.setValueAtTime(880, ctx.currentTime);
-    o.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(660, ctx.currentTime+0.1);
     g.gain.setValueAtTime(0.3, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-    o.start(); o.stop(ctx.currentTime + 0.3);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.3);
+    o.start(); o.stop(ctx.currentTime+0.3);
   } catch(e) {}
 }
-
 async function requestNotify() {
   if (!('Notification' in window)) return;
   if (Notification.permission === 'granted') { notifyPermission = true; return; }
-  const r = await Notification.requestPermission();
-  notifyPermission = r === 'granted';
+  notifyPermission = (await Notification.requestPermission()) === 'granted';
 }
-
 function showNotification(title, body) {
   playSound();
   if (notifyPermission) new Notification(title, { body });
@@ -262,24 +310,22 @@ function showNotification(title, body) {
 async function doLogin() {
   const user = document.getElementById('login-user').value.trim();
   const pass = document.getElementById('login-pass').value;
-  if (!user || !pass) { showError('login-error'); return; }
+  if (!user || !pass) { showErr('login-error'); return; }
   const email = user.includes('@') ? user : user + EMAIL_DOMAIN;
   const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) { showError('login-error'); return; }
+  if (error) { showErr('login-error'); return; }
   adminId = data.user.id;
-  adminName = user.replace(EMAIL_DOMAIN, '').replace(/@.*/, '');
+  adminName = user.replace(EMAIL_DOMAIN,'').replace(/@.*/,'');
   await checkMustChangePass();
 }
 
 async function checkMustChangePass() {
   const { data } = await sb.from('admin_users').select('must_change_password').eq('id', adminId).single();
   if (!data) {
-    // ยังไม่มี row → สร้างใหม่
     await sb.from('admin_users').insert({ id: adminId, username: adminName, must_change_password: true });
-    startApp();
+    hide('login-screen'); show('change-pass-screen');
   } else if (data.must_change_password) {
-    hide('login-screen');
-    show('change-pass-screen');
+    hide('login-screen'); show('change-pass-screen');
   } else {
     startApp();
   }
@@ -288,9 +334,8 @@ async function checkMustChangePass() {
 async function doChangePass() {
   const np = document.getElementById('new-pass').value;
   const cp = document.getElementById('confirm-pass').value;
-  if (!np || np.length < 8 || np !== cp) { showError('change-pass-error'); return; }
-  const { error } = await sb.auth.updateUser({ password: np });
-  if (error) { showError('change-pass-error'); return; }
+  if (!np || np.length < 8 || np !== cp) { showErr('change-pass-error'); return; }
+  await sb.auth.updateUser({ password: np });
   await sb.from('admin_users').update({ must_change_password: false }).eq('id', adminId);
   hide('change-pass-screen');
   startApp();
@@ -305,8 +350,7 @@ async function doLogout() {
 }
 
 function startApp() {
-  hide('login-screen'); hide('change-pass-screen');
-  show('app');
+  hide('login-screen'); hide('change-pass-screen'); show('app');
   document.getElementById('topbar-name').textContent = adminName;
   requestNotify();
   updateLastSeen();
@@ -316,6 +360,15 @@ function startApp() {
   setInterval(() => { loadConvs(); pollMessages(); }, 4000);
 }
 
+async function checkSession() {
+  const { data } = await sb.auth.getSession();
+  if (data?.session?.user) {
+    adminId = data.session.user.id;
+    adminName = (data.session.user.email||'').replace(EMAIL_DOMAIN,'').replace(/@.*/,'');
+    await checkMustChangePass();
+  } else { show('login-screen'); }
+}
+
 async function updateLastSeen() {
   if (!adminId) return;
   await sb.from('admin_users').update({ last_seen: new Date().toISOString() }).eq('id', adminId);
@@ -323,32 +376,19 @@ async function updateLastSeen() {
 }
 
 async function loadOnlineAdmins() {
-  const since = new Date(Date.now() - 60000).toISOString();
-  const { data } = await sb.from('admin_users').select('username, last_seen').gte('last_seen', since);
+  const since = new Date(Date.now()-60000).toISOString();
+  const { data } = await sb.from('admin_users').select('username').gte('last_seen', since);
   const el = document.getElementById('online-admins');
   if (!el) return;
-  const admins = data || [];
+  const admins = data||[];
   el.innerHTML = `<span class="online-label">ออนไลน์ ${admins.length} คน:</span>` +
     admins.map(a => `<div class="admin-avatar" title="${esc(a.username)}">${esc(a.username).slice(0,2).toUpperCase()}</div>`).join('');
-}
-
-// SESSION CHECK
-async function checkSession() {
-  const { data } = await sb.auth.getSession();
-  if (data?.session?.user) {
-    adminId = data.session.user.id;
-    const email = data.session.user.email || '';
-    adminName = email.replace(EMAIL_DOMAIN, '').replace(/@.*/, '');
-    await checkMustChangePass();
-  } else {
-    show('login-screen');
-  }
 }
 
 // CONVERSATIONS
 async function loadConvs() {
   const { data } = await sb.from('conversations').select('*').order('updated_at', { ascending: false });
-  allConvs = data || [];
+  allConvs = data||[];
   renderConvList();
 }
 
@@ -369,150 +409,273 @@ function renderConvList() {
   if (filterStatus !== 'all') convs = convs.filter(c => c.status === filterStatus);
   if (searchText) convs = convs.filter(c =>
     (c.display_name||'').toLowerCase().includes(searchText) ||
+    (c.nickname||'').toLowerCase().includes(searchText) ||
     (c.last_message||'').toLowerCase().includes(searchText)
   );
   document.getElementById('conv-count').textContent = convs.length;
-  if (convs.length === 0) {
-    document.getElementById('conv-list').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px;">ไม่พบ conversation</div>';
+  if (!convs.length) {
+    document.getElementById('conv-list').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px;">ไม่พบ</div>';
     return;
   }
   document.getElementById('conv-list').innerHTML = convs.map(c => {
-    const unread = unreadCounts[c.id] || 0;
-    return `<div class="conv-item ${c.id === curConvId ? 'active' : ''}" onclick="openConv('${c.id}','${c.user_id}','${esc(c.display_name || c.user_id)}')">
+    const unread = unreadCounts[c.id]||0;
+    const name = c.nickname || c.display_name || c.user_id;
+    const pCls = c.priority === 'urgent' ? 'p-urgent' : c.priority === 'low' ? 'p-low' : 'p-normal';
+    return `<div class="conv-item ${c.id===curConvId?'active':''}" onclick="openConv('${c.id}','${c.user_id}','${esc(name)}')">
       <div class="conv-name-row">
-        <div class="conv-name">${esc(c.display_name || c.user_id)} <span class="badge badge-${c.status||'waiting'}">${statusLabel(c.status)}</span></div>
+        <div class="conv-name">
+          <div class="priority-dot ${pCls}"></div>
+          ${esc(name)}
+          <span class="badge badge-${c.status||'waiting'}">${statusLabel(c.status)}</span>
+        </div>
         <div class="conv-right">
-          ${unread > 0 ? `<span class="unread-badge">${unread}</span>` : ''}
+          ${unread>0?`<span class="unread-badge">${unread}</span>`:''}
           <span class="conv-time">${fmtTime(c.updated_at)}</span>
         </div>
       </div>
-      <div class="conv-msg">${esc(c.last_message || '')}</div>
+      <div class="conv-msg">${esc(c.last_message||'')}</div>
     </div>`;
   }).join('');
 }
 
-function statusLabel(s) { return { waiting:'รอตอบ', active:'กำลังคุย', resolved:'เสร็จแล้ว' }[s] || s; }
+function statusLabel(s) { return {waiting:'รอตอบ',active:'กำลังคุย',resolved:'เสร็จแล้ว'}[s]||s; }
 
 function subscribeAll() {
-  sb.channel('rt-convs').on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, loadConvs).subscribe();
-  sb.channel('rt-new-msgs').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+  sb.channel('rt-convs').on('postgres_changes',{event:'*',schema:'public',table:'conversations'},loadConvs).subscribe();
+  sb.channel('rt-new-msgs').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
     const m = payload.new;
     if (m.role !== 'customer') return;
     if (m.conversation_id === curConvId) return;
-    unreadCounts[m.conversation_id] = (unreadCounts[m.conversation_id] || 0) + 1;
+    unreadCounts[m.conversation_id] = (unreadCounts[m.conversation_id]||0)+1;
     renderConvList();
-    const conv = allConvs.find(c => c.id === m.conversation_id);
-    showNotification('ข้อความใหม่จาก ' + (conv?.display_name || 'ลูกค้า'), m.message);
+    const conv = allConvs.find(c=>c.id===m.conversation_id);
+    showNotification('ข้อความใหม่จาก '+(conv?.nickname||conv?.display_name||'ลูกค้า'), m.message||'ส่งไฟล์มา');
   }).subscribe();
 }
 
-// OPEN CONVERSATION
+// OPEN CONV
 async function openConv(id, userId, name) {
   curConvId = id; curUserId = userId; curConvName = name;
-  lastMsgId = null;
+  lastMsgId = null; showingHistory = false;
   unreadCounts[id] = 0;
   renderConvList();
   if (msgSub) sb.removeChannel(msgSub);
 
+  const conv = allConvs.find(c=>c.id===id);
+  const pLabel = {urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'}[conv?.priority||'normal'];
+
   document.getElementById('chat-area').innerHTML = `
     <div class="chat-header">
       <div class="chat-header-info">
-        <div class="chat-header-name">${esc(name)}</div>
+        <div class="chat-header-name">
+          ${esc(name)}
+          <button class="edit-name-btn" onclick="openNicknameModal()" title="เปลี่ยนชื่อ">✏️</button>
+          <span class="priority-badge priority-${conv?.priority||'normal'}" id="priority-badge" onclick="cyclePriority()" style="cursor:pointer;" title="คลิกเพื่อเปลี่ยน">${pLabel}</span>
+        </div>
         <div class="chat-header-meta">${userId}</div>
       </div>
       <div class="chat-header-actions">
-        <button class="history-btn" onclick="toggleHistory()">📋 ประวัติ</button>
+        <button class="hdr-btn" onclick="toggleConvSearch()">🔍 ค้นหา</button>
+        <button class="hdr-btn" onclick="toggleHistory()">📋 ประวัติ</button>
+        <button class="hdr-btn" onclick="exportConv()">⬇️ Export</button>
         <button class="resolve-btn" onclick="openTagModal()">✓ เสร็จสิ้น</button>
       </div>
     </div>
-    <div class="messages" id="messages"></div>
-    <div class="quick-replies">${QUICK_REPLIES.map(q => `<button class="qr-btn" onclick="insertQuickReply('${esc(q)}')">${esc(q)}</button>`).join('')}</div>
+    <div class="conv-search-bar" id="conv-search-bar">
+      <input id="conv-search-input" placeholder="ค้นหาข้อความใน conversation..." oninput="highlightSearch(this.value)">
+    </div>
+    <div class="messages" id="messages">
+      <div class="typing-indicator" id="typing-indicator">
+        <div class="typing-dots">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quick-replies">${QUICK_REPLIES.map(q=>`<button class="qr-btn" onclick="insertQR('${esc(q)}')">${esc(q)}</button>`).join('')}</div>
     <div class="chat-input-area">
+      <div class="input-mode-tabs">
+        <button class="mode-tab active" id="tab-reply" onclick="setMode(false)">💬 ตอบกลับ</button>
+        <button class="mode-tab note-tab" id="tab-note" onclick="setMode(true)">📝 Note ลับ</button>
+      </div>
       <div class="input-row">
+        <button class="attach-btn" onclick="document.getElementById('file-input').click()">📎</button>
         <textarea class="chat-input" id="msg-input"
           placeholder="พิมพ์ข้อความ... (Enter ส่ง, Shift+Enter ขึ้นบรรทัด)" rows="1"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"
-          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';handleTyping()"></textarea>
         <button class="send-btn" id="send-btn" onclick="sendMsg()">ส่ง</button>
       </div>
     </div>`;
 
   await loadMsgs(id, false);
 
-  msgSub = sb.channel('rt-msgs-' + id)
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${id}` }, p => {
+  msgSub = sb.channel('rt-msgs-'+id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`conversation_id=eq.${id}`},p=>{
       const c = document.getElementById('messages');
       if (!c) return;
-      c.insertAdjacentHTML('beforeend', renderMsg(p.new));
-      c.scrollTop = c.scrollHeight;
+      const atBottom = c.scrollHeight-c.scrollTop-c.clientHeight < 60;
+      const ti = document.getElementById('typing-indicator');
+      if (ti) c.insertBefore(renderMsgEl(p.new), ti);
+      else c.insertAdjacentHTML('beforeend', renderMsg(p.new));
+      if (atBottom) c.scrollTop = c.scrollHeight;
       lastMsgId = p.new.id;
+      if (p.new.role === 'customer') markRead(p.new.id);
     }).subscribe();
 
-  await sb.from('conversations').update({ status: 'active', assigned_to: adminName }).eq('id', id);
+  await sb.from('conversations').update({ status:'active', assigned_to:adminName }).eq('id', id);
   loadConvs();
   document.getElementById('msg-input')?.focus();
 }
 
-let showingHistory = false;
-async function toggleHistory() {
-  showingHistory = !showingHistory;
-  await loadMsgs(curConvId, showingHistory);
+// PRIORITY
+async function cyclePriority() {
+  if (!curConvId) return;
+  const conv = allConvs.find(c=>c.id===curConvId);
+  const order = ['normal','urgent','low'];
+  const next = order[(order.indexOf(conv?.priority||'normal')+1)%3];
+  await sb.from('conversations').update({ priority: next }).eq('id', curConvId);
+  loadConvs();
+  // update badge
+  const badge = document.getElementById('priority-badge');
+  if (badge) {
+    const pLabel = {urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'}[next];
+    badge.textContent = pLabel;
+    badge.className = `priority-badge priority-${next}`;
+  }
 }
 
+// AI PRIORITY
+async function analyzePriority(text) {
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': '', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 50,
+        messages: [{
+          role: 'user',
+          content: `วิเคราะห์ข้อความลูกค้าต่อไปนี้แล้วตอบแค่คำเดียว: urgent, normal, หรือ low
+
+urgent = มีปัญหาเร่งด่วน โกรธ ไม่พอใจ ของไม่มา รอนาน ขอคืนเงิน
+normal = สอบถามข้อมูล ติดตามงาน ทั่วไป
+low = ขอบคุณ โอเค รับทราบ ไม่มีปัญหา
+
+ข้อความ: "${text}"
+
+ตอบแค่คำเดียว:`
+        }]
+      })
+    });
+    const data = await res.json();
+    const priority = data.content?.[0]?.text?.trim().toLowerCase();
+    if (['urgent','normal','low'].includes(priority)) return priority;
+  } catch(e) {}
+  return 'normal';
+}
+
+// MESSAGES
 async function loadMsgs(convId, withHistory) {
-  let query = sb.from('messages').select('*').order('created_at', { ascending: true });
   if (withHistory) {
-    // ดึงทุก messages ของ user นี้จากทุก conversation
-    const conv = allConvs.find(c => c.id === convId);
+    const conv = allConvs.find(c=>c.id===convId);
     if (conv) {
-      const { data: pastConvs } = await sb.from('conversations').select('id').eq('user_id', conv.user_id).neq('id', convId);
-      const pastIds = (pastConvs || []).map(c => c.id);
-      if (pastIds.length > 0) {
-        const { data: pastMsgs } = await sb.from('messages').select('*, conversations(display_name)').in('conversation_id', pastIds).order('created_at', { ascending: true });
-        const { data: curMsgs } = await sb.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
+      const { data: pastConvs } = await sb.from('conversations').select('id').eq('user_id',conv.user_id).neq('id',convId);
+      const pastIds = (pastConvs||[]).map(c=>c.id);
+      if (pastIds.length) {
+        const { data: past } = await sb.from('messages').select('*').in('conversation_id',pastIds).order('created_at',{ascending:true});
+        const { data: cur } = await sb.from('messages').select('*').eq('conversation_id',convId).order('created_at',{ascending:true});
         const c = document.getElementById('messages');
-        if (!c) return;
-        c.innerHTML = (pastMsgs||[]).map(renderMsg).join('') +
-          '<div class="history-divider">— การสนทนาปัจจุบัน —</div>' +
-          (curMsgs||[]).map(renderMsg).join('');
-        c.scrollTop = c.scrollHeight;
-        if (curMsgs?.length) lastMsgId = curMsgs[curMsgs.length-1].id;
+        const ti = document.getElementById('typing-indicator');
+        if (c) {
+          const html = (past||[]).map(renderMsg).join('') + '<div class="history-divider">— การสนทนาปัจจุบัน —</div>' + (cur||[]).map(renderMsg).join('');
+          if (ti) ti.insertAdjacentHTML('beforebegin', html);
+          else c.innerHTML = html;
+          c.scrollTop = c.scrollHeight;
+          if (cur?.length) lastMsgId = cur[cur.length-1].id;
+        }
         return;
       }
     }
   }
-  const { data } = await sb.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
+  const { data } = await sb.from('messages').select('*').eq('conversation_id',convId).order('created_at',{ascending:true});
   const c = document.getElementById('messages');
-  if (!c) return;
-  c.innerHTML = (data||[]).map(renderMsg).join('');
-  c.scrollTop = c.scrollHeight;
-  if (data?.length) lastMsgId = data[data.length-1].id;
+  const ti = document.getElementById('typing-indicator');
+  if (c) {
+    if (ti) ti.insertAdjacentHTML('beforebegin', (data||[]).map(renderMsg).join(''));
+    else c.innerHTML = (data||[]).map(renderMsg).join('');
+    c.scrollTop = c.scrollHeight;
+    if (data?.length) lastMsgId = data[data.length-1].id;
+  }
 }
 
 async function pollMessages() {
   if (!curConvId) return;
-  const { data } = await sb.from('messages').select('*').eq('conversation_id', curConvId).order('created_at', { ascending: true });
+  const { data } = await sb.from('messages').select('*').eq('conversation_id',curConvId).order('created_at',{ascending:true});
   if (!data?.length) return;
   const latest = data[data.length-1];
   if (latest.id === lastMsgId) return;
   lastMsgId = latest.id;
   const c = document.getElementById('messages');
   if (!c) return;
-  const atBottom = c.scrollHeight - c.scrollTop - c.clientHeight < 50;
-  c.innerHTML = data.map(renderMsg).join('');
+  const ti = document.getElementById('typing-indicator');
+  const atBottom = c.scrollHeight-c.scrollTop-c.clientHeight < 60;
+  if (ti) ti.insertAdjacentHTML('beforebegin', data.map(renderMsg).join(''));
+  else c.innerHTML = data.map(renderMsg).join('');
   if (atBottom) c.scrollTop = c.scrollHeight;
 }
 
 function renderMsg(m) {
-  const cls = m.role === 'admin' ? 'admin' : m.role === 'ai' ? 'ai' : 'customer';
-  const bcls = m.role === 'admin' ? 'ba' : m.role === 'ai' ? 'bai' : 'bc';
-  const acls = m.role === 'admin' ? 'av-admin' : m.role === 'ai' ? 'av-ai' : 'av-customer';
-  const atxt = m.role === 'admin' ? (m.admin_name||'ADM').slice(0,2).toUpperCase() : m.role === 'ai' ? 'AI' : 'USR';
-  const lbl = m.role === 'admin' ? (m.admin_name||'Admin') : m.role === 'ai' ? 'AI' : 'ลูกค้า';
-  return `<div class="msg-row ${cls}">
+  const el = document.createElement('div');
+  el.innerHTML = renderMsgHTML(m);
+  return el.innerHTML;
+}
+
+function renderMsgEl(m) {
+  const el = document.createElement('div');
+  el.innerHTML = renderMsgHTML(m);
+  return el.firstElementChild;
+}
+
+function renderMsgHTML(m) {
+  if (m.is_note) {
+    return `<div class="msg-row note">
+      <div class="msg-avatar av-note">📝</div>
+      <div><div class="msg-bubble bn">📝 Note: ${esc(m.message)}</div><div class="msg-meta">${esc(m.admin_name||'Admin')} · ${fmtTime(m.created_at)}</div></div>
+    </div>`;
+  }
+  const cls = m.role==='admin'?'admin':m.role==='ai'?'ai':'customer';
+  const bcls = m.role==='admin'?'ba':m.role==='ai'?'bai':'bc';
+  const acls = m.role==='admin'?'av-admin':m.role==='ai'?'av-ai':'av-customer';
+  const atxt = m.role==='admin'?(m.admin_name||'ADM').slice(0,2).toUpperCase():m.role==='ai'?'AI':'USR';
+  const lbl = m.role==='admin'?(m.admin_name||'Admin'):m.role==='ai'?'AI':'ลูกค้า';
+  const readTick = m.role==='admin'&&m.read_at?'<span class="read-tick">✓✓</span>':'';
+  let content = '';
+  if (m.file_url && m.file_type?.startsWith('image')) {
+    content = `<img class="msg-img" src="${esc(m.file_url)}" onclick="viewImg('${esc(m.file_url)}')" alt="รูปภาพ">`;
+  } else if (m.file_url) {
+    content = `<a href="${esc(m.file_url)}" target="_blank" style="color:var(--accent);">📎 ${esc(m.message||'ไฟล์แนบ')}</a>`;
+  } else {
+    content = esc(m.message);
+  }
+  return `<div class="msg-row ${cls}" data-id="${m.id}">
     <div class="msg-avatar ${acls}">${atxt}</div>
-    <div><div class="msg-bubble ${bcls}">${esc(m.message)}</div><div class="msg-meta">${lbl} · ${fmtTime(m.created_at)}</div></div>
+    <div><div class="msg-bubble ${bcls}">${content}</div><div class="msg-meta">${lbl} · ${fmtTime(m.created_at)} ${readTick}</div></div>
   </div>`;
+}
+
+function viewImg(url) {
+  const v = document.getElementById('img-viewer');
+  document.getElementById('img-viewer-src').src = url;
+  v.style.display = 'flex';
+}
+
+async function markRead(msgId) {
+  await sb.from('messages').update({ read_at: new Date().toISOString() }).eq('id', msgId);
+}
+
+// TYPING INDICATOR
+function handleTyping() {
+  // แสดง typing indicator ให้แอดมินคนอื่นเห็นผ่าน presence channel (simplified)
 }
 
 // SEND
@@ -523,65 +686,176 @@ async function sendMsg() {
   if (!text || !curConvId) return;
   btn.disabled = true; inp.value = ''; inp.style.height = 'auto';
   const ts = new Date().toISOString();
-  await sb.from('messages').insert({ conversation_id: curConvId, role: 'admin', message: text, admin_name: adminName, created_at: ts });
-  await sb.from('conversations').update({ last_message: `[${adminName}] ${text}`, updated_at: ts, assigned_to: adminName }).eq('id', curConvId);
-  await pushLine(curUserId, text);
-  btn.disabled = false; inp.focus();
-}
 
-function insertQuickReply(text) {
-  const inp = document.getElementById('msg-input');
-  if (!inp) return;
-  inp.value = text;
-  inp.focus();
+  if (isNoteMode) {
+    await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts, is_note:true });
+  } else {
+    await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts });
+    await sb.from('conversations').update({ last_message:`[${adminName}] ${text}`, updated_at:ts, assigned_to:adminName }).eq('id', curConvId);
+    await pushLine(curUserId, text);
+  }
+
+  btn.disabled = false; inp.focus();
 }
 
 async function pushLine(userId, text) {
   if (!userId) return;
   try {
     await fetch(N8N_SEND_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ userId, message: text })
     });
   } catch(e) { console.error(e); }
 }
 
-// TAG MODAL
-function openTagModal() {
-  selectedTag = null;
-  document.getElementById('tag-options').innerHTML = TAGS.map(t =>
-    `<button class="tag-btn" onclick="selectTag('${t}',this)">${t}</button>`).join('');
-  document.getElementById('tag-modal').style.display = 'flex';
+// FILE UPLOAD
+async function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file || !curConvId) return;
+  const isImg = file.type.startsWith('image');
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const base64 = e.target.result;
+    const ts = new Date().toISOString();
+    await sb.from('messages').insert({
+      conversation_id: curConvId, role:'admin', message:file.name,
+      admin_name:adminName, created_at:ts, file_url:base64,
+      file_type: file.type
+    });
+    await sb.from('conversations').update({ last_message:`[${adminName}] ส่งไฟล์: ${file.name}`, updated_at:ts }).eq('id', curConvId);
+    if (!isImg) await pushLine(curUserId, `ส่งไฟล์: ${file.name}`);
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
 }
 
-function selectTag(tag, el) {
-  document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedTag = tag;
+// MODES
+function setMode(noteMode) {
+  isNoteMode = noteMode;
+  document.getElementById('tab-reply').classList.toggle('active', !noteMode);
+  document.getElementById('tab-note').classList.toggle('active', noteMode);
+  const inp = document.getElementById('msg-input');
+  const btn = document.getElementById('send-btn');
+  if (inp) { inp.className = `chat-input${noteMode?' note-mode':''}`; inp.placeholder = noteMode ? 'จดโน้ตลับ... (แอดมินเท่านั้นที่เห็น)' : 'พิมพ์ข้อความ...'; inp.focus(); }
+  if (btn) { btn.className = `send-btn${noteMode?' note-send':''}`; }
 }
 
-async function confirmResolve(tag) {
-  document.getElementById('tag-modal').style.display = 'none';
+function insertQR(text) { const inp = document.getElementById('msg-input'); if (inp) { inp.value = text; inp.focus(); } }
+
+// SEARCH IN CONV
+function toggleConvSearch() {
+  const bar = document.getElementById('conv-search-bar');
+  if (!bar) return;
+  convSearchActive = !convSearchActive;
+  bar.style.display = convSearchActive ? 'block' : 'none';
+  if (convSearchActive) document.getElementById('conv-search-input')?.focus();
+  else highlightSearch('');
+}
+
+function highlightSearch(q) {
+  const msgs = document.getElementById('messages');
+  if (!msgs) return;
+  if (!q) { msgs.querySelectorAll('.highlight').forEach(el => { el.outerHTML = el.textContent; }); return; }
+  const bubbles = msgs.querySelectorAll('.msg-bubble');
+  bubbles.forEach(b => {
+    if (b.querySelector('img')) return;
+    const orig = b.textContent;
+    if (orig.toLowerCase().includes(q.toLowerCase())) {
+      b.innerHTML = esc(orig).replace(new RegExp(esc(q),'gi'), m => `<span class="highlight">${m}</span>`);
+    }
+  });
+}
+
+// HISTORY
+async function toggleHistory() {
+  showingHistory = !showingHistory;
+  const c = document.getElementById('messages');
+  const ti = document.getElementById('typing-indicator');
+  if (c) { if(ti) { Array.from(c.children).forEach(el => { if(el !== ti) el.remove(); }); } else c.innerHTML = ''; }
+  await loadMsgs(curConvId, showingHistory);
+}
+
+// EXPORT
+async function exportConv() {
   if (!curConvId) return;
-  const update = { status: 'resolved', assigned_to: adminName };
-  if (tag) update.tag = tag;
-  await sb.from('conversations').update(update).eq('id', curConvId);
+  const conv = allConvs.find(c=>c.id===curConvId);
+  const { data: msgs } = await sb.from('messages').select('*').eq('conversation_id',curConvId).order('created_at',{ascending:true});
+  let txt = `Conversation Export\n`;
+  txt += `ลูกค้า: ${conv?.nickname||conv?.display_name||curConvName}\n`;
+  txt += `Status: ${statusLabel(conv?.status)}\n`;
+  txt += `Tag: ${conv?.tag||'-'}\n`;
+  txt += `แอดมิน: ${conv?.assigned_to||'-'}\n`;
+  txt += `─────────────────────────\n\n`;
+  (msgs||[]).filter(m=>!m.is_note).forEach(m => {
+    const lbl = m.role==='admin'?`[${m.admin_name||'Admin'}]`:m.role==='ai'?'[AI]':'[ลูกค้า]';
+    const time = new Date(m.created_at).toLocaleString('th-TH');
+    txt += `${lbl} ${time}\n${m.file_url?'[ไฟล์แนบ]':m.message}\n\n`;
+  });
+  const blob = new Blob([txt], { type:'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `conv-${conv?.nickname||conv?.display_name||'export'}-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+}
+
+// NICKNAME
+function openNicknameModal() {
+  const conv = allConvs.find(c=>c.id===curConvId);
+  document.getElementById('nickname-input').value = conv?.nickname||'';
+  document.getElementById('nickname-modal').style.display = 'flex';
+}
+
+async function saveNickname() {
+  const val = document.getElementById('nickname-input').value.trim();
+  if (!curConvId) return;
+  await sb.from('conversations').update({ nickname: val||null }).eq('id', curConvId);
+  closeModal('nickname-modal');
+  curConvName = val || allConvs.find(c=>c.id===curConvId)?.display_name || curConvId;
+  const nameEl = document.querySelector('.chat-header-name');
+  if (nameEl) nameEl.childNodes[0].textContent = curConvName+' ';
   loadConvs();
 }
 
+// TAG
+function openTagModal() {
+  selectedTag = null;
+  document.getElementById('tag-options').innerHTML = TAGS.map(t=>`<button class="tag-btn" onclick="selectTag('${t}',this)">${t}</button>`).join('');
+  document.getElementById('tag-modal').style.display = 'flex';
+}
+function selectTag(tag, el) { document.querySelectorAll('.tag-btn').forEach(b=>b.classList.remove('selected')); el.classList.add('selected'); selectedTag = tag; }
+async function confirmResolve(tag) {
+  closeModal('tag-modal');
+  if (!curConvId) return;
+  const u = { status:'resolved', assigned_to:adminName };
+  if (tag) u.tag = tag;
+  await sb.from('conversations').update(u).eq('id', curConvId);
+  loadConvs();
+}
+
+// REALTIME unread + AI priority
+sb.channel('rt-priority').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},async payload=>{
+  const m = payload.new;
+  if (m.role !== 'customer' || !m.message) return;
+  // วิเคราะห์ priority ด้วย AI
+  const priority = await analyzePriority(m.message);
+  if (priority !== 'normal') {
+    await sb.from('conversations').update({ priority }).eq('id', m.conversation_id);
+  }
+}).subscribe();
+
 // UTILS
-function show(id) { const el = document.getElementById(id); if(el) el.style.display = id === 'app' ? 'flex' : 'flex'; }
-function hide(id) { const el = document.getElementById(id); if(el) el.style.display = 'none'; }
-function showError(id) { const el = document.getElementById(id); if(el) el.style.display = 'block'; }
+function show(id) { const el=document.getElementById(id); if(el) el.style.display='flex'; }
+function hide(id) { const el=document.getElementById(id); if(el) el.style.display='none'; }
+function showErr(id) { const el=document.getElementById(id); if(el) el.style.display='block'; }
+function closeModal(id) { const el=document.getElementById(id); if(el) el.style.display='none'; }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtTime(ts) {
   if (!ts) return '';
-  const d = new Date(ts), now = new Date(), diff = now - d;
-  if (diff < 60000) return 'เมื่อกี้';
-  if (diff < 3600000) return `${Math.floor(diff/60000)} นาทีที่แล้ว`;
-  if (diff < 86400000) return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-  return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+  const d=new Date(ts),now=new Date(),diff=now-d;
+  if (diff<60000) return 'เมื่อกี้';
+  if (diff<3600000) return `${Math.floor(diff/60000)} นาทีที่แล้ว`;
+  if (diff<86400000) return d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});
 }
 
 window.onload = () => checkSession();
