@@ -157,7 +157,21 @@
   .modal-input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
   .modal-input:focus { border-color: var(--accent); }
 
-  /* PRIORITY BADGE */
+  /* NOTES PANEL */
+  .notes-panel { width: 220px; background: var(--surface); border-left: 1px solid var(--border); display: none; flex-direction: column; flex-shrink: 0; }
+  .notes-panel.show { display: flex; }
+  .notes-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .notes-header span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); }
+  .notes-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .note-item { background: var(--note-bg); border: 1px dashed rgba(245,166,35,0.3); border-radius: 8px; padding: 8px 10px; }
+  .note-item-text { font-size: 13px; color: var(--text); line-height: 1.5; word-break: break-word; }
+  .note-item-meta { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: 'IBM Plex Mono', monospace; }
+  .notes-input-area { padding: 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
+  .notes-textarea { width: 100%; padding: 8px 10px; background: var(--bg); border: 1px solid rgba(245,166,35,0.3); border-radius: 8px; color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 13px; resize: none; outline: none; line-height: 1.5; max-height: 80px; }
+  .notes-textarea:focus { border-color: var(--amber); }
+  .notes-send-btn { width: 100%; margin-top: 6px; padding: 7px; background: rgba(245,166,35,0.15); color: var(--amber); border: 1px solid rgba(245,166,35,0.3); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 13px; cursor: pointer; }
+  .notes-send-btn:hover { background: rgba(245,166,35,0.25); }
+  .notes-empty { text-align: center; color: var(--text3); font-size: 12px; padding: 20px 10px; }
   .priority-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
   .priority-urgent { background: rgba(244,91,91,0.15); color: var(--red); }
   .priority-normal { background: rgba(245,166,35,0.15); color: var(--amber); }
@@ -176,19 +190,6 @@
 <!-- IMAGE VIEWER -->
 <div id="img-viewer" onclick="this.style.display='none'">
   <img id="img-viewer-src" src="" alt="">
-</div>
-
-<!-- NOTE MODAL -->
-<div class="modal-overlay" id="note-modal">
-  <div class="modal-box">
-    <h3>📝 Note ลับ</h3>
-    <p>ลูกค้าไม่เห็น มองเห็นเฉพาะแอดมินเท่านั้น</p>
-    <textarea class="modal-input" id="note-input" rows="3" placeholder="จดโน้ต..." style="resize:vertical;"></textarea>
-    <div class="modal-actions">
-      <button class="btn-skip" onclick="closeModal('note-modal')">ยกเลิก</button>
-      <button class="btn-confirm" onclick="saveNote()">บันทึก Note</button>
-    </div>
-  </div>
 </div>
 
 <!-- TAG MODAL -->
@@ -278,6 +279,19 @@
     </div>
     <div class="chat-area" id="chat-area">
       <div class="empty-state"><div style="font-size:40px;opacity:0.3;">💬</div><div>เลือก conversation เพื่อเริ่มตอบ</div></div>
+    </div>
+    <div class="notes-panel show" id="notes-panel">
+      <div class="notes-header">
+        <span>📝 Notes</span>
+      </div>
+      <div class="notes-list" id="notes-list">
+        <div class="notes-empty">ยังไม่มี note</div>
+      </div>
+      <div class="notes-input-area">
+        <textarea class="notes-textarea" id="notes-input" placeholder="จดโน้ตลับ..." rows="2"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNotePanel();}"></textarea>
+        <button class="notes-send-btn" onclick="saveNotePanel()">+ บันทึก Note</button>
+      </div>
     </div>
   </div>
 </div>
@@ -518,7 +532,7 @@ async function openConv(id, userId, name) {
         <div class="chat-header-meta">${userId}</div>
       </div>
       <div class="chat-header-actions">
-        <button class="hdr-btn" onclick="openNoteModal()">📝 Note</button>
+
         <button class="hdr-btn" onclick="toggleConvSearch()">🔍 ค้นหา</button>
         <button class="hdr-btn" onclick="toggleHistory()">📋 ประวัติ</button>
         <button class="hdr-btn" onclick="exportConv()">⬇️ Export</button>
@@ -564,23 +578,45 @@ async function openConv(id, userId, name) {
 
   await sb.from('conversations').update({ status:'active', assigned_to:adminName }).eq('id', id);
   loadConvs();
+  loadNotes();
   document.getElementById('msg-input')?.focus();
 }
 
-// NOTE MODAL
-function openNoteModal() {
-  const modal = document.getElementById('note-modal');
-  if (modal) { modal.style.display = 'flex'; document.getElementById('note-input')?.focus(); }
+// NOTES PANEL
+function toggleNotesPanel() {
+  const panel = document.getElementById('notes-panel');
+  if (!panel) return;
+  panel.classList.toggle('show');
+  if (panel.classList.contains('show')) loadNotes();
 }
 
-async function saveNote() {
-  const text = document.getElementById('note-input')?.value.trim();
+async function loadNotes() {
+  if (!curConvId) return;
+  const { data } = await sb.from('messages').select('*')
+    .eq('conversation_id', curConvId)
+    .eq('is_note', true)
+    .order('created_at', { ascending: false });
+  const list = document.getElementById('notes-list');
+  if (!list) return;
+  if (!data?.length) { list.innerHTML = '<div class="notes-empty">ยังไม่มี note</div>'; return; }
+  list.innerHTML = data.map(n => `
+    <div class="note-item">
+      <div class="note-item-text">${esc(n.message)}</div>
+      <div class="note-item-meta">${esc(n.admin_name||'Admin')} · ${fmtTime(n.created_at)}</div>
+    </div>`).join('');
+}
+
+async function saveNotePanel() {
+  const inp = document.getElementById('notes-input');
+  const text = inp?.value.trim();
   if (!text || !curConvId) return;
   const ts = new Date().toISOString();
   await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts, is_note:true });
-  document.getElementById('note-input').value = '';
-  closeModal('note-modal');
+  inp.value = '';
+  loadNotes();
 }
+
+// NOTE MODAL (ลบแล้ว ใช้ panel แทน)
 
 // AI PRIORITY
 async function analyzePriority(text) {
