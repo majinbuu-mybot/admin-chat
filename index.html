@@ -50,6 +50,10 @@
   .filter-tabs { display: flex; gap: 4px; }
   .filter-tab { flex: 1; padding: 5px 4px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text3); font-family: 'Sarabun', sans-serif; font-size: 11px; cursor: pointer; text-align: center; }
   .filter-tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .priority-filter { display: flex; gap: 4px; }
+  .pf-btn { flex: 1; padding: 4px 4px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text3); font-family: 'Sarabun', sans-serif; font-size: 11px; cursor: pointer; text-align: center; }
+  .pf-btn.active { border-color: var(--text2); color: var(--text); background: var(--surface2); }
+  .urgent-badge { background: rgba(244,91,91,0.15); color: var(--red); border: 1px solid rgba(244,91,91,0.3); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
   .online-admins { padding: 6px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 32px; }
   .online-label { font-size: 10px; color: var(--text3); }
   .admin-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: default; }
@@ -174,6 +178,19 @@
   <img id="img-viewer-src" src="" alt="">
 </div>
 
+<!-- NOTE MODAL -->
+<div class="modal-overlay" id="note-modal">
+  <div class="modal-box">
+    <h3>📝 Note ลับ</h3>
+    <p>ลูกค้าไม่เห็น มองเห็นเฉพาะแอดมินเท่านั้น</p>
+    <textarea class="modal-input" id="note-input" rows="3" placeholder="จดโน้ต..." style="resize:vertical;"></textarea>
+    <div class="modal-actions">
+      <button class="btn-skip" onclick="closeModal('note-modal')">ยกเลิก</button>
+      <button class="btn-confirm" onclick="saveNote()">บันทึก Note</button>
+    </div>
+  </div>
+</div>
+
 <!-- TAG MODAL -->
 <div class="modal-overlay" id="tag-modal">
   <div class="modal-box">
@@ -229,6 +246,7 @@
   <div class="topbar">
     <div class="topbar-title">Admin Chat</div>
     <div class="topbar-right">
+      <span class="urgent-badge" id="urgent-count" style="display:none;">🔴 <span id="urgent-num">0</span> ด่วน</span>
       <div class="topbar-admin"><div class="online-dot"></div><span id="topbar-name">Admin</span></div>
       <a href="dashboard.html" class="topbar-btn" target="_blank">📊 Dashboard</a>
       <button class="topbar-btn" onclick="doLogout()">ออกจากระบบ</button>
@@ -247,6 +265,12 @@
           <button class="filter-tab" onclick="setFilter('waiting',this)">รอตอบ</button>
           <button class="filter-tab" onclick="setFilter('active',this)">คุยอยู่</button>
           <button class="filter-tab" onclick="setFilter('resolved',this)">เสร็จ</button>
+        </div>
+        <div class="priority-filter">
+          <button class="pf-btn active" onclick="setPriorityFilter('all',this)">ทั้งหมด</button>
+          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 Urgent</button>
+          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟡 Normal</button>
+          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🟢 Low</button>
         </div>
       </div>
       <div class="online-admins" id="online-admins"><span class="online-label">ออนไลน์:</span></div>
@@ -276,6 +300,7 @@ let curConvId = null, curUserId = null, curConvName = null;
 let lastMsgId = null, msgSub = null;
 let adminName = '', adminId = null;
 let allConvs = [], filterStatus = 'all', searchText = '';
+let priorityFilter = 'all';
 let unreadCounts = {}, selectedTag = null;
 let notifyPermission = false;
 let isNoteMode = false;
@@ -404,14 +429,32 @@ function setFilter(status, el) {
   renderConvList();
 }
 
+function setPriorityFilter(priority, el) {
+  priorityFilter = priority;
+  document.querySelectorAll('.pf-btn').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderConvList();
+}
+
 function renderConvList() {
   let convs = allConvs;
   if (filterStatus !== 'all') convs = convs.filter(c => c.status === filterStatus);
+  if (priorityFilter !== 'all') convs = convs.filter(c => (c.priority||'normal') === priorityFilter);
   if (searchText) convs = convs.filter(c =>
     (c.display_name||'').toLowerCase().includes(searchText) ||
     (c.nickname||'').toLowerCase().includes(searchText) ||
     (c.last_message||'').toLowerCase().includes(searchText)
   );
+  // เรียง urgent ก่อนเฉพาะ filter "รอตอบ"
+  if (filterStatus === 'waiting') {
+    const order = { urgent:0, normal:1, low:2 };
+    convs = [...convs].sort((a,b) => (order[a.priority||'normal']||1) - (order[b.priority||'normal']||1));
+  }
+  // อัปเดต urgent badge ใน topbar
+  const urgentCount = allConvs.filter(c => (c.priority||'normal') === 'urgent' && c.status !== 'resolved').length;
+  const urgentEl = document.getElementById('urgent-count');
+  const urgentNum = document.getElementById('urgent-num');
+  if (urgentEl && urgentNum) { urgentNum.textContent = urgentCount; urgentEl.style.display = urgentCount > 0 ? 'inline-flex' : 'none'; }
   document.getElementById('conv-count').textContent = convs.length;
   if (!convs.length) {
     document.getElementById('conv-list').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px;">ไม่พบ</div>';
@@ -470,11 +513,12 @@ async function openConv(id, userId, name) {
         <div class="chat-header-name">
           ${esc(name)}
           <button class="edit-name-btn" onclick="openNicknameModal()" title="เปลี่ยนชื่อ">✏️</button>
-          <span class="priority-badge priority-${conv?.priority||'normal'}" id="priority-badge" onclick="cyclePriority()" style="cursor:pointer;" title="คลิกเพื่อเปลี่ยน">${pLabel}</span>
+          <span class="priority-badge priority-${conv?.priority||'normal'}" id="priority-badge">${pLabel}</span>
         </div>
         <div class="chat-header-meta">${userId}</div>
       </div>
       <div class="chat-header-actions">
+        <button class="hdr-btn" onclick="openNoteModal()">📝 Note</button>
         <button class="hdr-btn" onclick="toggleConvSearch()">🔍 ค้นหา</button>
         <button class="hdr-btn" onclick="toggleHistory()">📋 ประวัติ</button>
         <button class="hdr-btn" onclick="exportConv()">⬇️ Export</button>
@@ -493,10 +537,6 @@ async function openConv(id, userId, name) {
     </div>
     <div class="quick-replies">${QUICK_REPLIES.map(q=>`<button class="qr-btn" onclick="insertQR('${esc(q)}')">${esc(q)}</button>`).join('')}</div>
     <div class="chat-input-area">
-      <div class="input-mode-tabs">
-        <button class="mode-tab active" id="tab-reply" onclick="setMode(false)">💬 ตอบกลับ</button>
-        <button class="mode-tab note-tab" id="tab-note" onclick="setMode(true)">📝 Note ลับ</button>
-      </div>
       <div class="input-row">
         <button class="attach-btn" onclick="document.getElementById('file-input').click()">📎</button>
         <textarea class="chat-input" id="msg-input"
@@ -527,21 +567,19 @@ async function openConv(id, userId, name) {
   document.getElementById('msg-input')?.focus();
 }
 
-// PRIORITY
-async function cyclePriority() {
-  if (!curConvId) return;
-  const conv = allConvs.find(c=>c.id===curConvId);
-  const order = ['normal','urgent','low'];
-  const next = order[(order.indexOf(conv?.priority||'normal')+1)%3];
-  await sb.from('conversations').update({ priority: next }).eq('id', curConvId);
-  loadConvs();
-  // update badge
-  const badge = document.getElementById('priority-badge');
-  if (badge) {
-    const pLabel = {urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'}[next];
-    badge.textContent = pLabel;
-    badge.className = `priority-badge priority-${next}`;
-  }
+// NOTE MODAL
+function openNoteModal() {
+  const modal = document.getElementById('note-modal');
+  if (modal) { modal.style.display = 'flex'; document.getElementById('note-input')?.focus(); }
+}
+
+async function saveNote() {
+  const text = document.getElementById('note-input')?.value.trim();
+  if (!text || !curConvId) return;
+  const ts = new Date().toISOString();
+  await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts, is_note:true });
+  document.getElementById('note-input').value = '';
+  closeModal('note-modal');
 }
 
 // AI PRIORITY
@@ -727,17 +765,6 @@ async function handleFileUpload(event) {
   };
   reader.readAsDataURL(file);
   event.target.value = '';
-}
-
-// MODES
-function setMode(noteMode) {
-  isNoteMode = noteMode;
-  document.getElementById('tab-reply').classList.toggle('active', !noteMode);
-  document.getElementById('tab-note').classList.toggle('active', noteMode);
-  const inp = document.getElementById('msg-input');
-  const btn = document.getElementById('send-btn');
-  if (inp) { inp.className = `chat-input${noteMode?' note-mode':''}`; inp.placeholder = noteMode ? 'จดโน้ตลับ... (แอดมินเท่านั้นที่เห็น)' : 'พิมพ์ข้อความ...'; inp.focus(); }
-  if (btn) { btn.className = `send-btn${noteMode?' note-send':''}`; }
 }
 
 function insertQR(text) { const inp = document.getElementById('msg-input'); if (inp) { inp.value = text; inp.focus(); } }
