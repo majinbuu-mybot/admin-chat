@@ -272,9 +272,9 @@
         </div>
         <div class="priority-filter">
           <button class="pf-btn active" onclick="setPriorityFilter('all',this)">ทั้งหมด</button>
-          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 Urgent</button>
-          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟡 Normal</button>
-          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🟢 Low</button>
+          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 เร่งด่วน</button>
+          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟡 ทั่วไป</button>
+          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🟢 ไม่เร่งด่วน</button>
         </div>
       </div>
       <div class="online-admins" id="online-admins"><span class="online-label">ออนไลน์:</span></div>
@@ -291,7 +291,7 @@
         <div class="notes-empty">ยังไม่มี note</div>
       </div>
       <div class="notes-input-area">
-        <textarea class="notes-textarea" id="notes-input" placeholder="จดโน้ตลับ..." rows="2"
+        <textarea class="notes-textarea" id="notes-input" placeholder="เพิ่มโน้ต" rows="2"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNotePanel();}"></textarea>
         <button class="notes-send-btn" onclick="saveNotePanel()">+ บันทึก Note</button>
       </div>
@@ -309,7 +309,7 @@ const N8N_SEND_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send';
 const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
 const EMAIL_DOMAIN = '@admin.local';
 const TAGS = ['สอบถามราคา','สอบถามสินค้า','ปัญหาการส่ง','เปลี่ยน/คืนสินค้า','ชำระเงิน','อื่นๆ'];
-const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','ขอบคุณที่ติดต่อมาค่ะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ'];
+const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','ขอบคุณที่ติดต่อมาค่ะ','แอดมินกำลังตรวจสอบให้ค่ะ'];
 // ========================================
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
