@@ -177,7 +177,13 @@
   .notes-textarea::placeholder { color: var(--text3); }
   .notes-send-btn { width: 100%; margin-top: 6px; padding: 7px; background: rgba(245,166,35,0.12); color: var(--amber); border: none; border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 13px; cursor: pointer; }
   .notes-send-btn:hover { background: rgba(245,166,35,0.22); }
-  .notes-empty { text-align: center; color: var(--text3); font-size: 12px; padding: 20px 10px; }
+  .notes-customer-profile { padding: 20px 14px 14px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .notes-customer-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+  .notes-customer-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; background: var(--surface2); color: var(--text2); font-size: 20px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .notes-customer-name { font-size: 14px; font-weight: 600; color: var(--text); text-align: center; cursor: pointer; padding: 2px 8px; border-radius: 6px; }
+  .notes-customer-name:hover { background: var(--surface2); }
+  .notes-customer-name-input { font-size: 14px; font-weight: 600; color: var(--text); text-align: center; background: var(--bg); border: 1px solid var(--accent); border-radius: 6px; padding: 2px 8px; outline: none; width: 100%; font-family: 'Sarabun', sans-serif; }
+  .notes-customer-id { font-size: 10px; color: var(--text3); font-family: 'IBM Plex Mono', monospace; text-align: center; }
   .priority-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
   .priority-urgent { background: rgba(244,91,91,0.15); color: var(--red); }
   .priority-normal { background: rgba(245,166,35,0.15); color: var(--amber); }
@@ -291,6 +297,11 @@
       <div class="empty-state"><div style="font-size:40px;opacity:0.3;">💬</div><div>เลือก conversation เพื่อเริ่มตอบ</div></div>
     </div>
     <div class="notes-panel show" id="notes-panel">
+      <div class="notes-customer-profile" id="notes-customer-profile">
+        <div class="notes-customer-avatar-placeholder" id="notes-avatar">—</div>
+        <div class="notes-customer-name" id="notes-customer-name" onclick="editNotesName()" title="กดเพื่อเปลี่ยนชื่อ">—</div>
+        <div class="notes-customer-id" id="notes-customer-id"></div>
+      </div>
       <div class="notes-header">
         <span>📝 Notes</span>
       </div>
@@ -461,6 +472,7 @@ async function loadConvs() {
   const { data } = await sb.from('conversations').select('*').order('updated_at', { ascending: false });
   allConvs = data||[];
   renderConvList();
+  if (curConvId) updateNotesProfile();
 }
 
 function filterConvs() {
@@ -619,11 +631,55 @@ async function openConv(id, userId, name) {
   await sb.from('conversations').update({ status:'active', assigned_to:adminName }).eq('id', id);
   loadConvs();
   loadNotes();
+  updateNotesProfile();
   document.getElementById('msg-input')?.focus();
 }
 
 // NOTES PANEL
-function toggleNotesPanel() {
+function updateNotesProfile() {
+  const conv = allConvs.find(c => c.id === curConvId);
+  if (!conv) return;
+  const name = conv.nickname || conv.display_name || conv.user_id;
+  // avatar
+  const avatarEl = document.getElementById('notes-avatar');
+  if (avatarEl) {
+    if (conv.picture_url) {
+      avatarEl.outerHTML = `<img class="notes-customer-avatar" id="notes-avatar" src="${esc(conv.picture_url)}" onerror="this.outerHTML='<div class=notes-customer-avatar-placeholder id=notes-avatar>${esc(name).slice(0,2).toUpperCase()}</div>'" alt="">`;
+    } else {
+      avatarEl.className = 'notes-customer-avatar-placeholder';
+      avatarEl.textContent = esc(name).slice(0,2).toUpperCase();
+    }
+  }
+  // ชื่อ
+  const nameEl = document.getElementById('notes-customer-name');
+  if (nameEl) nameEl.textContent = name;
+  // userId
+  const idEl = document.getElementById('notes-customer-id');
+  if (idEl) idEl.textContent = conv.user_id;
+}
+
+function editNotesName() {
+  const conv = allConvs.find(c => c.id === curConvId);
+  if (!conv) return;
+  const nameEl = document.getElementById('notes-customer-name');
+  if (!nameEl) return;
+  const current = conv.nickname || conv.display_name || '';
+  nameEl.outerHTML = `<input class="notes-customer-name-input" id="notes-customer-name" value="${esc(current)}" placeholder="ชื่อลูกค้า"
+    onkeydown="if(event.key==='Enter')saveNotesName(this.value);if(event.key==='Escape')updateNotesProfile();"
+    onblur="saveNotesName(this.value)">`;
+  document.getElementById('notes-customer-name')?.focus();
+}
+
+async function saveNotesName(val) {
+  const text = val?.trim();
+  if (!curConvId) return;
+  await sb.from('conversations').update({ nickname: text||null }).eq('id', curConvId);
+  curConvName = text || allConvs.find(c=>c.id===curConvId)?.display_name || curConvId;
+  loadConvs();
+  // อัปเดต chat header ด้วย
+  const nameEl = document.querySelector('.chat-header-name');
+  if (nameEl) nameEl.childNodes[0].textContent = curConvName + ' ';
+}
   const panel = document.getElementById('notes-panel');
   if (!panel) return;
   panel.classList.toggle('show');
