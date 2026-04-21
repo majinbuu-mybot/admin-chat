@@ -280,15 +280,15 @@
         <input class="search-input" id="search-input" placeholder="ค้นหาชื่อหรือข้อความ..." oninput="filterConvs()">
         <div class="filter-tabs">
           <button class="filter-tab active" onclick="setFilter('all',this)">ทั้งหมด</button>
-          <button class="filter-tab" onclick="setFilter('waiting',this)">รอตอบ</button>
-          <button class="filter-tab" onclick="setFilter('active',this)">คุยอยู่</button>
-          <button class="filter-tab" onclick="setFilter('resolved',this)">เสร็จ</button>
+          <button class="filter-tab" onclick="setFilter('waiting',this)">ยังไม่อ่าน</button>
+          <button class="filter-tab" onclick="setFilter('active',this)">รอดำเนินการ</button>
+          <button class="filter-tab" onclick="setFilter('resolved',this)">สำเร็จ</button>
         </div>
         <div class="priority-filter">
           <button class="pf-btn active" onclick="setPriorityFilter('all',this)">ทั้งหมด</button>
-          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 Urgent</button>
-          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟡 Normal</button>
-          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🟢 Low</button>
+          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 ปัญหาเร่งด่วน</button>
+          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟢 ไม่เร่งด่วน</button>
+          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🔵 เครดิตฟรี</button>
         </div>
       </div>
       <div class="online-admins" id="online-admins"><span class="online-label">ออนไลน์:</span></div>
@@ -312,7 +312,7 @@
         <div class="notes-empty">ยังไม่มี note</div>
       </div>
       <div class="notes-input-area">
-        <textarea class="notes-textarea" id="notes-input" placeholder="จดโน้ตลับ..." rows="2"
+        <textarea class="notes-textarea" id="notes-input" placeholder="จดโน้ต" rows="2"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNotePanel();}"></textarea>
         <button class="notes-send-btn" onclick="saveNotePanel()">+ บันทึก Note</button>
       </div>
@@ -331,8 +331,8 @@ const N8N_IMAGE_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-image';
 const EMAIL_DOMAIN = '@admin.local';
 const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
 const LOGO_URL = ''; // ใส่ URL logo ถ้ามี เช่น '/logo.png'
-const TAGS = ['สอบถามราคา','สอบถามสินค้า','ปัญหาการส่ง','เปลี่ยน/คืนสินค้า','ชำระเงิน','อื่นๆ'];
-const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','ขอบคุณที่ติดต่อมาค่ะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ'];
+const TAGS = ['สอบถามอื่นๆ','ตามยอดฝาก','หัวร้อน','ตามยอดถอน','ลืมรหัสผ่าน','สอบถามกิจกรรม/โปรโมชั่น','ติดต่อสมัคร','สอบถามยอดเสีย','เช็ค/ล้างเทิร์น','เข้าเล่นไม่ได้','ขอช่องทาง','แจ้งปัญหาไม่ชัดเจน','โบนัสไทม์','ไม่ได้ใช้บัญชีที่สมัคร','ไม่ได้โอนบัญชีเว็บ','ตามยอดฝากบอทไม่จับ','ส่งลิงค์+รูป ที่ไม่เกี่ยวกับทางเว็บ','ปัญหาเกม','เครดิตฟรี','วอลเล็ท'];
+const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ','ทำรายการเรียบร้อยแล้วค่ะ'];
 // ========================================
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
