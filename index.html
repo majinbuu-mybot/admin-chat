@@ -161,7 +161,7 @@
   .modal-input:focus { border-color: var(--accent); }
 
   /* NOTES PANEL */
-  .notes-panel { width: 300px; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+  .notes-panel { width: 220px; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
   .notes-header { padding: 12px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
   .notes-header span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); }
   .notes-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -262,7 +262,7 @@
 <div id="app">
   <div class="topbar">
     <img id="topbar-logo" src="" alt="" style="height:32px;border-radius:6px;display:none;">
-    <div class="topbar-title">Humannoise Chat</div>
+    <div class="topbar-title">Admin Chat</div>
     <div class="topbar-right">
       <span class="urgent-badge" id="urgent-count" style="display:none;">🔴 <span id="urgent-num">0</span> ด่วน</span>
       <div class="topbar-admin"><div class="online-dot"></div><span id="topbar-name">Admin</span></div>
@@ -286,9 +286,9 @@
         </div>
         <div class="priority-filter">
           <button class="pf-btn active" onclick="setPriorityFilter('all',this)">ทั้งหมด</button>
-          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 ปํญหาเร่งด่วน</button>
-          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟡 ปัญหาทั่วไป</button>
-          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🟢 อื่นๆ</button>
+          <button class="pf-btn" onclick="setPriorityFilter('urgent',this)">🔴 Urgent</button>
+          <button class="pf-btn" onclick="setPriorityFilter('normal',this)">🟡 Normal</button>
+          <button class="pf-btn" onclick="setPriorityFilter('low',this)">🟢 Low</button>
         </div>
       </div>
       <div class="online-admins" id="online-admins"><span class="online-label">ออนไลน์:</span></div>
@@ -302,7 +302,6 @@
         <div class="notes-customer-avatar-placeholder" id="notes-avatar">—</div>
         <div class="notes-customer-name" id="notes-customer-name-wrap">
           <span id="notes-customer-name">—</span>
-          <span class="notes-customer-name-edit" onclick="editNotesName()" title="เปลี่ยนชื่อ">✏️</span>
         </div>
         <div class="notes-customer-id" id="notes-customer-id"></div>
       </div>
@@ -313,7 +312,7 @@
         <div class="notes-empty">ยังไม่มี note</div>
       </div>
       <div class="notes-input-area">
-        <textarea class="notes-textarea" id="notes-input" placeholder="เพิ่มโน้ต" rows="2"
+        <textarea class="notes-textarea" id="notes-input" placeholder="จดโน้ตลับ..." rows="2"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNotePanel();}"></textarea>
         <button class="notes-send-btn" onclick="saveNotePanel()">+ บันทึก Note</button>
       </div>
@@ -668,10 +667,19 @@ function editNotesName() {
   const wrap = document.getElementById('notes-customer-name-wrap');
   if (!wrap) return;
   const current = conv.nickname || conv.display_name || '';
-  wrap.innerHTML = `<input class="notes-customer-name-input" id="notes-name-inp" value="${esc(current)}" placeholder="ชื่อลูกค้า"
-    onkeydown="if(event.key==='Enter'){event.preventDefault();saveNotesName(this.value);}if(event.key==='Escape')updateNotesProfile();"
-    onblur="saveNotesName(this.value)">`;
-  document.getElementById('notes-name-inp')?.focus();
+  let cancelled = false;
+  wrap.innerHTML = `<input class="notes-customer-name-input" id="notes-name-inp" value="${esc(current)}" placeholder="ชื่อลูกค้า">`;
+  const inp = document.getElementById('notes-name-inp');
+  if (!inp) return;
+  inp.focus();
+  inp.onkeydown = (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+    if (e.key === 'Escape') { cancelled = true; inp.blur(); }
+  };
+  inp.onblur = () => {
+    if (cancelled) { updateNotesProfile(); return; }
+    saveNotesName(inp.value);
+  };
 }
 
 async function saveNotesName(val) {
@@ -683,7 +691,7 @@ async function saveNotesName(val) {
   // อัปเดต chat header ด้วย
   const nameEl = document.querySelector('.chat-header-name');
   if (nameEl) nameEl.childNodes[0].textContent = curConvName + ' ';
-
+}
   const panel = document.getElementById('notes-panel');
   if (!panel) return;
   panel.classList.toggle('show');
@@ -844,22 +852,34 @@ function renderMsgHTML(m) {
   if (m.is_note) return ''; // note แสดงแค่ใน panel ขวา
   const cls = m.role==='admin'?'admin':m.role==='ai'?'ai':'customer';
   const bcls = m.role==='admin'?'ba':m.role==='ai'?'bai':'bc';
-  const acls = m.role==='admin'?'av-admin':m.role==='ai'?'av-ai':'av-customer';
-  const atxt = m.role==='admin'?(m.admin_name||'ADM').slice(0,2).toUpperCase():m.role==='ai'?'AI':'USR';
   const lbl = m.role==='admin'?(m.admin_name||'Admin'):m.role==='ai'?'AI':'ลูกค้า';
   const readTick = m.role==='admin'&&m.read_at?'<span class="read-tick">✓✓</span>':'';
+
+  // Avatar
+  let avatarHtml = '';
+  if (m.role === 'customer') {
+    const conv = allConvs.find(c => c.id === m.conversation_id);
+    if (conv?.picture_url) {
+      avatarHtml = `<img class="msg-avatar" src="${esc(conv.picture_url)}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;margin-top:2px;" onerror="this.outerHTML='<div class=\\'msg-avatar av-customer\\'>USR</div>'" alt="">`;
+    } else {
+      const name = conv?.nickname || conv?.display_name || '';
+      avatarHtml = `<div class="msg-avatar av-customer">${name.slice(0,2).toUpperCase()||'USR'}</div>`;
+    }
+  } else if (m.role === 'admin') {
+    avatarHtml = `<div class="msg-avatar av-admin">${(m.admin_name||'ADM').slice(0,2).toUpperCase()}</div>`;
+  } else {
+    avatarHtml = `<div class="msg-avatar av-ai">AI</div>`;
+  }
+
   let content = '';
   if (m.file_url && m.file_type?.startsWith('image')) {
-    // รูปที่แอดมินส่ง (base64)
     content = `<img class="msg-img" src="${esc(m.file_url)}" onclick="viewImg('${esc(m.file_url)}')" alt="รูปภาพ">`;
   } else if (m.file_url) {
     content = `<a href="${esc(m.file_url)}" target="_blank" style="color:var(--accent);">📎 ${esc(m.message||'ไฟล์แนบ')}</a>`;
   } else if (m.message_type === 'image' && m.message_id) {
-    // รูปที่ลูกค้าส่งมา ดึงผ่าน n8n proxy
     const proxyUrl = `${N8N_IMAGE_URL}?messageId=${m.message_id}`;
     content = `<img class="msg-img" src="${proxyUrl}" onclick="viewImg('${proxyUrl}')" alt="รูปภาพ" onerror="this.outerHTML='<span style=\\'color:var(--text3);font-size:12px;\\'>รูปภาพหมดอายุแล้ว</span>'">`;
   } else if (m.message_type === 'sticker' && m.sticker_id) {
-    // สติกเกอร์ลูกค้า
     content = `<img style="width:80px;height:80px;" src="https://stickershop.line-scdn.net/stickershop/v1/sticker/${m.sticker_id}/android/sticker.png" alt="สติกเกอร์" onerror="this.outerHTML='🙂'">`;
   } else if (m.message_type === 'image' || m.message === '[image]') {
     content = `<span style="color:var(--text3);font-size:12px;">📷 รูปภาพ</span>`;
@@ -869,7 +889,7 @@ function renderMsgHTML(m) {
     content = esc(m.message);
   }
   return `<div class="msg-row ${cls}" data-id="${m.id}">
-    <div class="msg-avatar ${acls}">${atxt}</div>
+    ${avatarHtml}
     <div><div class="msg-bubble ${bcls}">${content}</div><div class="msg-meta">${lbl} · ${fmtTime(m.created_at)} ${readTick}</div></div>
   </div>`;
 }
