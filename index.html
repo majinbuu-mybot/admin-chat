@@ -574,7 +574,7 @@ async function openConv(id, userId, name) {
   if (msgSub) sb.removeChannel(msgSub);
 
   const conv = allConvs.find(c=>c.id===id);
-  const pLabel = {urgent:'🔴 Urgent',normal:'🟡 Normal',low:'🟢 Low'}[conv?.priority||'normal'];
+  const pLabel = {urgent:'🔴 Urgent',normal:'🟢 Normal',low:'🔵 Low'}[conv?.priority||'normal'];
 
   document.getElementById('chat-area').innerHTML = `
     <div class="chat-header">
