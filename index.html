@@ -273,14 +273,15 @@
   <div class="main">
     <div class="sidebar">
       <div class="sidebar-header">
-        <span>Conversations</span>
+        <select id="channel-select" onchange="setChannel(this.value)" style="flex:1;padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;outline:none;cursor:pointer;">
+        </select>
         <span class="conv-count" id="conv-count">0</span>
       </div>
       <div class="sidebar-tools">
         <input class="search-input" id="search-input" placeholder="ค้นหาชื่อหรือข้อความ..." oninput="filterConvs()">
         <div class="filter-tabs">
           <button class="filter-tab active" onclick="setFilter('all',this)">ทั้งหมด</button>
-          <button class="filter-tab" onclick="setFilter('waiting',this)">ยังไม่อ่าน</button>
+          <button class="filter-tab" onclick="setFilter('waiting',this)">ยังไม่ได้อ่าน</button>
           <button class="filter-tab" onclick="setFilter('active',this)">รอดำเนินการ</button>
           <button class="filter-tab" onclick="setFilter('resolved',this)">สำเร็จ</button>
         </div>
@@ -333,6 +334,11 @@ const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
 const LOGO_URL = ''; // ใส่ URL logo ถ้ามี เช่น '/logo.png'
 const TAGS = ['สอบถามอื่นๆ','ตามยอดฝาก','หัวร้อน','ตามยอดถอน','ลืมรหัสผ่าน','สอบถามกิจกรรม/โปรโมชั่น','ติดต่อสมัคร','สอบถามยอดเสีย','เช็ค/ล้างเทิร์น','เข้าเล่นไม่ได้','ขอช่องทาง','แจ้งปัญหาไม่ชัดเจน','โบนัสไทม์','ไม่ได้ใช้บัญชีที่สมัคร','ไม่ได้โอนบัญชีเว็บ','ตามยอดฝากบอทไม่จับ','ส่งลิงค์+รูป ที่ไม่เกี่ยวกับทางเว็บ','ปัญหาเกม','เครดิตฟรี','วอลเล็ท'];
 const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ','ทำรายการเรียบร้อยแล้วค่ะ'];
+const CHANNELS = [
+  { value: 'all', label: 'ทุก Channel' },
+  { value: 'line_oa_1', label: 'LINE OA 1' },
+  // เพิ่ม LINE OA ใหม่ตรงนี้ เช่น { value: 'line_oa_2', label: 'LINE OA 2' },
+];
 // ========================================
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -340,7 +346,7 @@ let curConvId = null, curUserId = null, curConvName = null;
 let lastMsgId = null, msgSub = null;
 let adminName = '', adminId = null;
 let allConvs = [], filterStatus = 'all', searchText = '';
-let priorityFilter = 'all';
+let priorityFilter = 'all', curChannel = 'all';
 let unreadCounts = {}, selectedTag = null;
 let notifyPermission = false;
 let isNoteMode = false;
@@ -419,10 +425,14 @@ async function doLogout() {
 function startApp() {
   hide('login-screen'); hide('change-pass-screen'); show('app');
   document.getElementById('topbar-name').textContent = adminName;
-  // แสดง logo ถ้ามี
   if (LOGO_URL) {
     const logo = document.getElementById('topbar-logo');
     if (logo) { logo.src = LOGO_URL; logo.style.display = 'block'; }
+  }
+  // สร้าง channel dropdown
+  const sel = document.getElementById('channel-select');
+  if (sel) {
+    sel.innerHTML = CHANNELS.map(c => `<option value="${c.value}">${c.label}</option>`).join('');
   }
   requestNotify();
   updateLastSeen();
@@ -430,7 +440,6 @@ function startApp() {
   loadConvs();
   subscribeAll();
   setInterval(() => { loadConvs(); pollMessages(); }, 4000);
-  // session timeout
   const loginTime = Date.now();
   setInterval(() => {
     const elapsed = Date.now() - loginTime;
@@ -439,10 +448,13 @@ function startApp() {
       const w = document.getElementById('session-warning');
       if (w) w.style.display = 'block';
     }
-    if (elapsed >= SESSION_TIMEOUT_MS) {
-      doLogout();
-    }
+    if (elapsed >= SESSION_TIMEOUT_MS) doLogout();
   }, 60000);
+}
+
+function setChannel(val) {
+  curChannel = val;
+  renderConvList();
 }
 
 async function checkSession() {
@@ -499,6 +511,7 @@ function setPriorityFilter(priority, el) {
 
 function renderConvList() {
   let convs = allConvs;
+  if (curChannel !== 'all') convs = convs.filter(c => (c.channel||'line_oa_1') === curChannel);
   if (filterStatus !== 'all') convs = convs.filter(c => c.status === filterStatus);
   if (priorityFilter !== 'all') convs = convs.filter(c => (c.priority||'normal') === priorityFilter);
   if (searchText) convs = convs.filter(c =>
@@ -550,7 +563,7 @@ function renderConvList() {
   }).join('');
 }
 
-function statusLabel(s) { return {waiting:'รอตอบ',active:'กำลังคุย',resolved:'เสร็จแล้ว'}[s]||s; }
+function statusLabel(s) { return {waiting:'ยังไม่ได้อ่าน',active:'รอดำเนินการ',resolved:'สำเร็จ'}[s]||s; }
 
 function subscribeAll() {
   sb.channel('rt-convs').on('postgres_changes',{event:'*',schema:'public',table:'conversations'},loadConvs).subscribe();
@@ -574,7 +587,7 @@ async function openConv(id, userId, name) {
   if (msgSub) sb.removeChannel(msgSub);
 
   const conv = allConvs.find(c=>c.id===id);
-  const pLabel = {urgent:'🔴 Urgent',normal:'🟢 Normal',low:'🔵 Low'}[conv?.priority||'normal'];
+  const pLabel = {urgent:'🔴 ปัญหาเร่งด่วน',normal:'🟢 ไม่เร่งด่วน',low:'🔵 เครดิตฟรี'}[conv?.priority||'normal'];
 
   document.getElementById('chat-area').innerHTML = `
     <div class="chat-header">
