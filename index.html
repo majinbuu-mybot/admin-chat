@@ -350,6 +350,7 @@ let adminName = '', adminId = null;
 let allConvs = [], filterStatus = 'all', searchText = '';
 let priorityFilter = 'all', curChannel = 'all';
 let unreadCounts = {}, selectedTag = null;
+let pendingImageFile = null;
 let notifyPermission = false;
 let isNoteMode = false;
 let showingHistory = false;
@@ -926,6 +927,12 @@ function handleTyping() {
 
 // SEND
 async function sendMsg() {
+  if (pendingImageFile) {
+    const file = pendingImageFile;
+    cancelImagePreview();
+    await uploadAndSendImage(file);
+    return;
+  }
   const inp = document.getElementById('msg-input');
   const btn = document.getElementById('send-btn');
   const text = inp.value.trim();
@@ -1117,18 +1124,48 @@ function initOfflineIndicator() {
   if (!navigator.onLine) bar.style.display = 'block';
 }
 
-// PASTE รูป
-document.addEventListener('paste', async (e) => {
+// PASTE รูป — แสดง preview ก่อนส่ง
+
+document.addEventListener('paste', (e) => {
   if (!curConvId) return;
   const items = e.clipboardData?.items;
   if (!items) return;
   for (const item of items) {
     if (item.type.startsWith('image')) {
       const file = item.getAsFile();
-      if (file) await uploadAndSendImage(file);
+      if (file) showImagePreview(file);
     }
   }
 });
+
+function showImagePreview(file) {
+  pendingImageFile = file;
+  const inp = document.getElementById('msg-input');
+  if (!inp) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    let preview = document.getElementById('img-preview-bar');
+    if (!preview) {
+      preview = document.createElement('div');
+      preview.id = 'img-preview-bar';
+      preview.style.cssText = 'padding:8px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;';
+      inp.closest('.chat-input-area').parentNode.insertBefore(preview, inp.closest('.chat-input-area'));
+    }
+    preview.innerHTML = `
+      <img src="${e.target.result}" style="height:60px;border-radius:6px;object-fit:cover;">
+      <span style="font-size:13px;color:var(--text2);">กด Enter หรือปุ่มส่ง เพื่อส่งรูป</span>
+      <button onclick="cancelImagePreview()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;">✕</button>
+    `;
+    inp.focus();
+  };
+  reader.readAsDataURL(file);
+}
+
+function cancelImagePreview() {
+  pendingImageFile = null;
+  const preview = document.getElementById('img-preview-bar');
+  if (preview) preview.remove();
+}
 
 // อัปโหลดรูปไป Supabase Storage แล้วส่งให้ LINE
 async function uploadAndSendImage(file) {
