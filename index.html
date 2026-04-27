@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ชื่อนั้นสำคัญไฉน</title>
+<title>Humannoi</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -76,8 +76,8 @@
   .badge-resolved { background: rgba(139,144,167,0.1); color: var(--text3); }
   .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .p-urgent { background: var(--red); }
-  .p-normal { background: var(--green); }
-  .p-low { background: var(--accent); }
+  .p-normal { background: var(--amber); }
+  .p-low { background: var(--green); }
 
   /* CHAT */
   .chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
@@ -234,7 +234,7 @@
 <!-- LOGIN -->
 <div class="center-screen" id="login-screen" style="display:none;">
   <div class="card">
-    <h1>Admin Chat</h1>
+    <h1>Humannoi Chat</h1>
     <p>LINE OA Customer Support</p>
     <div class="field"><label>Username</label><input type="text" id="login-user" placeholder="เช่น noon" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
@@ -262,11 +262,11 @@
 <div id="app">
   <div class="topbar">
     <img id="topbar-logo" src="" alt="" style="height:32px;border-radius:6px;display:none;">
-    <div class="topbar-title">Humannoi Chat</div>
+    <div class="topbar-title">Admin Chat</div>
     <div class="topbar-right">
       <span class="urgent-badge" id="urgent-count" style="display:none;">🔴 <span id="urgent-num">0</span> ด่วน</span>
       <div class="topbar-admin"><div class="online-dot"></div><span id="topbar-name">Admin</span></div>
-      <a href="dashboard.html" class="topbar-btn" target="_blank">📊 Dashboard</a>
+     <!-- <a href="dashboard.html" class="topbar-btn" target="_blank">📊 Dashboard</a> --> 
       <button class="topbar-btn" onclick="doLogout()">ออกจากระบบ</button>
     </div>
   </div>
@@ -281,9 +281,9 @@
         <input class="search-input" id="search-input" placeholder="ค้นหาชื่อหรือข้อความ..." oninput="filterConvs()">
         <div class="filter-tabs">
           <button class="filter-tab active" onclick="setFilter('all',this)">ทั้งหมด</button>
-          <button class="filter-tab" onclick="setFilter('waiting',this)">ยังไม่ได้อ่าน</button>
-          <button class="filter-tab" onclick="setFilter('active',this)">รอดำเนินการ</button>
-          <button class="filter-tab" onclick="setFilter('resolved',this)">สำเร็จ</button>
+          <button class="filter-tab" onclick="setFilter('waiting',this)">รอตอบ</button>
+          <button class="filter-tab" onclick="setFilter('active',this)">คุยอยู่</button>
+          <button class="filter-tab" onclick="setFilter('resolved',this)">เสร็จ</button>
         </div>
         <div class="priority-filter">
           <button class="pf-btn active" onclick="setPriorityFilter('all',this)">ทั้งหมด</button>
@@ -328,14 +328,15 @@
 const SUPABASE_URL = 'https://difuopwxjyclghlgmvhm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZnVvcHd4anljbGdobGdtdmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mzg0NTEsImV4cCI6MjA5MTMxNDQ1MX0.nXxVxpYn34BkuGOuznAa6Hft721gZaj1jHSm5D2zm1A';
 const N8N_SEND_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send';
+// เพิ่ม LINE OA ใหม่ตรงนี้ เช่น const N8N_SEND_URL_2 = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send-2';
 const N8N_IMAGE_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-image';
-const EMAIL_DOMAIN = '@admin.humannoi';
+const EMAIL_DOMAIN = '@admin.local';
 const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
 const LOGO_URL = ''; // ใส่ URL logo ถ้ามี เช่น '/logo.png'
 const TAGS = ['สอบถามอื่นๆ','ตามยอดฝาก','หัวร้อน','ตามยอดถอน','ลืมรหัสผ่าน','สอบถามกิจกรรม/โปรโมชั่น','ติดต่อสมัคร','สอบถามยอดเสีย','เช็ค/ล้างเทิร์น','เข้าเล่นไม่ได้','ขอช่องทาง','แจ้งปัญหาไม่ชัดเจน','โบนัสไทม์','ไม่ได้ใช้บัญชีที่สมัคร','ไม่ได้โอนบัญชีเว็บ','ตามยอดฝากบอทไม่จับ','ส่งลิงค์+รูป ที่ไม่เกี่ยวกับทางเว็บ','ปัญหาเกม','เครดิตฟรี','วอลเล็ท'];
 const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ','ทำรายการเรียบร้อยแล้วค่ะ'];
 const CHANNELS = [
-  { value: 'all', label: 'ทุก Channel' },
+   { value: 'all', label: 'ทุก Channel' },
   { value: 'line_oa_1', label: 'LUCAC4' },
   { value: 'line_oa_2', label: 'HELEN888' },
   // เพิ่ม LINE OA ใหม่ตรงนี้ เช่น { value: 'line_oa_2', label: 'LINE OA 2' },
@@ -781,11 +782,11 @@ async function analyzePriority(text) {
         max_tokens: 50,
         messages: [{
           role: 'user',
-          content: `วิเคราะห์ข้อความลูกค้าต่อไปนี้แล้วตอบแค่คำเดียว: urgent, normal, หรือ low
+          content: `วิเคราะห์ข้อความลูกค้าต่อไปนี้แล้วตอบแค่คำเดียว: ปัญหาเร่งด่วน, ไม่เร่งด่วน, หรือ เครดิตฟรี
 
-urgent = มีปัญหาเร่งด่วน โกรธ ไม่พอใจ ของไม่มา รอนาน ขอคืนเงิน
-normal = สอบถามข้อมูล ติดตามงาน ทั่วไป
-low = ขอบคุณ โอเค รับทราบ ไม่มีปัญหา
+ปัญหาเร่งด่วน = มีปัญหาเร่งด่วน โกรธ ไม่พอใจ ของไม่มา รอนาน ขอคืนเงิน
+ไม่เร่งด่วน = สอบถามข้อมูล ติดตามงาน ทั่วไป
+เครดิตฟรี = เครดิตฟรี
 
 ข้อความ: "${text}"
 
@@ -943,10 +944,17 @@ async function sendMsg() {
   btn.disabled = false; inp.focus();
 }
 
+function getSendUrl(channel) {
+  // เพิ่ม channel ใหม่ตรงนี้ เช่น if (channel === 'line_oa_2') return N8N_SEND_URL_2;
+  return N8N_SEND_URL;
+}
+
 async function pushLine(userId, text) {
   if (!userId) return;
+  const conv = allConvs.find(c => c.id === curConvId);
+  const sendUrl = getSendUrl(conv?.channel);
   try {
-    await fetch(N8N_SEND_URL, {
+    await fetch(sendUrl, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ userId, message: text })
     });
@@ -957,21 +965,25 @@ async function pushLine(userId, text) {
 async function handleFileUpload(event) {
   const file = event.target.files[0];
   if (!file || !curConvId) return;
-  const isImg = file.type.startsWith('image');
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64 = e.target.result;
-    const ts = new Date().toISOString();
-    await sb.from('messages').insert({
-      conversation_id: curConvId, role:'admin', message:file.name,
-      admin_name:adminName, created_at:ts, file_url:base64,
-      file_type: file.type
-    });
-    await sb.from('conversations').update({ last_message:`[${adminName}] ส่งไฟล์: ${file.name}`, updated_at:ts }).eq('id', curConvId);
-    if (!isImg) await pushLine(curUserId, `ส่งไฟล์: ${file.name}`);
-  };
-  reader.readAsDataURL(file);
   event.target.value = '';
+  const isImg = file.type.startsWith('image');
+  if (isImg) {
+    await uploadAndSendImage(file);
+  } else {
+    // ไฟล์ปกติ เก็บ base64 ไว้ใน UI อย่างเดียว
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64 = e.target.result;
+      const ts = new Date().toISOString();
+      await sb.from('messages').insert({
+        conversation_id: curConvId, role:'admin', message: file.name,
+        admin_name: adminName, created_at: ts, file_url: base64, file_type: file.type
+      });
+      await sb.from('conversations').update({ last_message:`[${adminName}] ส่งไฟล์: ${file.name}`, updated_at: ts }).eq('id', curConvId);
+      await pushLine(curUserId, `ส่งไฟล์: ${file.name}`);
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 function insertQR(text) { const inp = document.getElementById('msg-input'); if (inp) { inp.value = text; inp.focus(); } }
@@ -1085,14 +1097,70 @@ function closeModal(id) { const el=document.getElementById(id); if(el) el.style.
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtTime(ts) {
   if (!ts) return '';
-  const d=new Date(ts),now=new Date(),diff=now-d;
-  if (diff<60000) return 'เมื่อกี้';
-  if (diff<3600000) return `${Math.floor(diff/60000)} นาทีที่แล้ว`;
-  if (diff<86400000) return d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-  return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  const d = new Date(ts), now = new Date(), diff = now - d;
+  if (diff < 60000) return 'เมื่อกี้';
+  if (diff < 3600000) return `${Math.floor(diff/60000)} นาทีที่แล้ว`;
+  if (diff < 86400000) return d.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+  if (diff < 172800000) return `เมื่อวาน ${d.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' })}`;
+  return `${d.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'2-digit' })} ${d.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' })}`;
 }
 
-window.onload = () => checkSession();
+// OFFLINE INDICATOR
+function initOfflineIndicator() {
+  const bar = document.createElement('div');
+  bar.id = 'offline-bar';
+  bar.style.cssText = 'display:none;position:fixed;top:0;left:0;right:0;background:#f45b5b;color:#fff;text-align:center;padding:8px;font-size:13px;z-index:999;font-family:Sarabun,sans-serif;';
+  bar.textContent = '⚠️ ไม่มีการเชื่อมต่ออินเทอร์เน็ต กรุณาตรวจสอบการเชื่อมต่อ';
+  document.body.appendChild(bar);
+  window.addEventListener('offline', () => { bar.style.display = 'block'; });
+  window.addEventListener('online', () => { bar.style.display = 'none'; });
+  if (!navigator.onLine) bar.style.display = 'block';
+}
+
+// PASTE รูป
+document.addEventListener('paste', async (e) => {
+  if (!curConvId) return;
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image')) {
+      const file = item.getAsFile();
+      if (file) await uploadAndSendImage(file);
+    }
+  }
+});
+
+// อัปโหลดรูปไป Supabase Storage แล้วส่งให้ LINE
+async function uploadAndSendImage(file) {
+  if (!curConvId || !curUserId) return;
+  try {
+    const ext = file.type.split('/')[1] || 'jpg';
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { data, error } = await sb.storage.from('chat-images').upload(fileName, file, { contentType: file.type });
+    if (error) { console.error('upload error', error); return; }
+    const { data: urlData } = sb.storage.from('chat-images').getPublicUrl(fileName);
+    const publicUrl = urlData.publicUrl;
+    const ts = new Date().toISOString();
+    await sb.from('messages').insert({
+      conversation_id: curConvId, role: 'admin', message: 'รูปภาพ',
+      admin_name: adminName, created_at: ts, file_url: publicUrl, file_type: file.type
+    });
+    await sb.from('conversations').update({ last_message: `[${adminName}] ส่งรูปภาพ`, updated_at: ts, assigned_to: adminName }).eq('id', curConvId);
+    // ส่งไป LINE
+    const conv = allConvs.find(c => c.id === curConvId);
+    const sendUrl = getSendUrl(conv?.channel);
+    await fetch(sendUrl, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: curUserId, imageUrl: publicUrl, type: 'image' })
+    });
+    // กำหนดลบหลัง 24 ชั่วโมง (เก็บ path ไว้ใน message)
+    setTimeout(async () => {
+      await sb.storage.from('chat-images').remove([fileName]);
+    }, 24 * 60 * 60 * 1000);
+  } catch(e) { console.error('uploadAndSendImage error', e); }
+}
+
+window.onload = () => { checkSession(); initOfflineIndicator(); }
 </script>
 </body>
 </html>
