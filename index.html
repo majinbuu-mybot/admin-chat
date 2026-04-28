@@ -338,7 +338,7 @@ const LOGO_URL = ''; // ใส่ URL logo ถ้ามี เช่น '/logo.p
 const TAGS = ['สอบถามอื่นๆ','ตามยอดฝาก','หัวร้อน','ตามยอดถอน','ลืมรหัสผ่าน','สอบถามกิจกรรม/โปรโมชั่น','ติดต่อสมัคร','สอบถามยอดเสีย','เช็ค/ล้างเทิร์น','เข้าเล่นไม่ได้','ขอช่องทาง','แจ้งปัญหาไม่ชัดเจน','โบนัสไทม์','ไม่ได้ใช้บัญชีที่สมัคร','ไม่ได้โอนบัญชีเว็บ','ตามยอดฝากบอทไม่จับ','ส่งลิงค์+รูป ที่ไม่เกี่ยวกับทางเว็บ','ปัญหาเกม','เครดิตฟรี','วอลเล็ท'];
 const QUICK_REPLIES = ['รับทราบค่ะ','รอสักครู่นะคะ','กำลังตรวจสอบให้ค่ะ','ได้เลยค่ะ','ทำรายการเรียบร้อยแล้วค่ะ'];
 const CHANNELS = [
-   { value: 'all', label: 'ทุก Channel' },
+   
   { value: 'line_oa_1', label: 'LUCAC4' },
   { value: 'line_oa_2', label: 'HELEN888' },
   // เพิ่ม LINE OA ใหม่ตรงนี้ เช่น { value: 'line_oa_2', label: 'LINE OA 2' },
@@ -350,7 +350,7 @@ let curConvId = null, curUserId = null, curConvName = null;
 let lastMsgId = null, msgSub = null;
 let adminName = '', adminId = null;
 let allConvs = [], filterStatus = 'all', searchText = '';
-let priorityFilter = 'all', curChannel = 'all';
+let priorityFilter = 'all', curChannel = 'line_oa_1';
 let unreadCounts = {}, selectedTag = null;
 let notifyPermission = false;
 let isNoteMode = false;
