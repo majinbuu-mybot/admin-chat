@@ -565,7 +565,7 @@ function renderConvList() {
     const name = c.nickname || c.display_name || c.user_id;
     const pCls = c.priority === 'urgent' ? 'p-urgent' : c.priority === 'low' ? 'p-low' : 'p-normal';
     const avatar = c.picture_url
-      ? `<img class="conv-avatar" src="${esc(c.picture_url)}" onerror="this.style.display='none'" alt="">`
+      ? `<img src="${esc(c.picture_url)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'" alt="">`
       : `<div class="conv-avatar-placeholder">${esc(name).slice(0,2).toUpperCase()}</div>`;
     return `<div class="conv-item ${c.id===curConvId?'active':''}" onclick="openConv('${c.id}','${c.user_id}','${esc(name)}')">
       <div style="display:flex;gap:10px;align-items:center;">
