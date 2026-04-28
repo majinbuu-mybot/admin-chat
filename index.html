@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Humannoi</title>
+<title>Humannoi/title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -57,7 +57,9 @@
   .online-admins { padding: 6px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 32px; }
   .online-label { font-size: 10px; color: var(--text3); }
   .admin-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: default; }
-  .conv-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .channel-badge { display: inline-block; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; margin-left: 4px; }
+  .back-btn { padding: 6px 12px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-family: 'Sarabun', sans-serif; font-size: 12px; cursor: pointer; display: none; }
+  .back-btn:hover { color: var(--text); }
   .conv-avatar-placeholder { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); color: var(--text2); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .session-warning { position: fixed; bottom: 20px; right: 20px; background: var(--amber); color: #000; padding: 12px 16px; border-radius: 10px; font-size: 13px; z-index: 200; display: none; }
   .conv-list { overflow-y: auto; flex: 1; }
@@ -234,7 +236,7 @@
 <!-- LOGIN -->
 <div class="center-screen" id="login-screen" style="display:none;">
   <div class="card">
-    <h1>Humannoi Chat</h1>
+    <h1>HumannoiChat</h1>
     <p>LINE OA Customer Support</p>
     <div class="field"><label>Username</label><input type="text" id="login-user" placeholder="เช่น noon" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
@@ -262,11 +264,11 @@
 <div id="app">
   <div class="topbar">
     <img id="topbar-logo" src="" alt="" style="height:32px;border-radius:6px;display:none;">
-    <div class="topbar-title">Humannoi Chat</div>
+    <button class="back-btn" id="back-btn" onclick="goBack()">← กลับ</button>
+    <div class="topbar-title">Admin Chat</div>
     <div class="topbar-right">
       <span class="urgent-badge" id="urgent-count" style="display:none;">🔴 <span id="urgent-num">0</span> ด่วน</span>
       <div class="topbar-admin"><div class="online-dot"></div><span id="topbar-name">Admin</span></div>
-     <!-- <a href="dashboard.html" class="topbar-btn" target="_blank">📊 Dashboard</a> --> 
       <button class="topbar-btn" onclick="doLogout()">ออกจากระบบ</button>
     </div>
   </div>
@@ -281,9 +283,9 @@
         <input class="search-input" id="search-input" placeholder="ค้นหาชื่อหรือข้อความ..." oninput="filterConvs()">
         <div class="filter-tabs">
           <button class="filter-tab active" onclick="setFilter('all',this)">ทั้งหมด</button>
-          <button class="filter-tab" onclick="setFilter('waiting',this)">รอตอบ</button>
-          <button class="filter-tab" onclick="setFilter('active',this)">คุยอยู่</button>
-          <button class="filter-tab" onclick="setFilter('resolved',this)">เสร็จ</button>
+          <button class="filter-tab" onclick="setFilter('waiting',this)">ยังไม่ได้อ่าน</button>
+          <button class="filter-tab" onclick="setFilter('active',this)">รอดำเนินการ/button>
+          <button class="filter-tab" onclick="setFilter('resolved',this)">สำเร็จ</button>
         </div>
         <div class="priority-filter">
           <button class="pf-btn active" onclick="setPriorityFilter('all',this)">ทั้งหมด</button>
@@ -313,7 +315,7 @@
         <div class="notes-empty">ยังไม่มี note</div>
       </div>
       <div class="notes-input-area">
-        <textarea class="notes-textarea" id="notes-input" placeholder="จดโน้ต" rows="2"
+        <textarea class="notes-textarea" id="notes-input" placeholder="เพิ่มโน้ต" rows="2"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNotePanel();}"></textarea>
         <button class="notes-send-btn" onclick="saveNotePanel()">+ บันทึก Note</button>
       </div>
@@ -330,7 +332,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const N8N_SEND_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send';
 // เพิ่ม LINE OA ใหม่ตรงนี้ เช่น const N8N_SEND_URL_2 = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send-2';
 const N8N_IMAGE_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-image';
-const EMAIL_DOMAIN = '@admin.local';
+const EMAIL_DOMAIN = '@admin.humannoi';
 const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
 const LOGO_URL = ''; // ใส่ URL logo ถ้ามี เช่น '/logo.png'
 const TAGS = ['สอบถามอื่นๆ','ตามยอดฝาก','หัวร้อน','ตามยอดถอน','ลืมรหัสผ่าน','สอบถามกิจกรรม/โปรโมชั่น','ติดต่อสมัคร','สอบถามยอดเสีย','เช็ค/ล้างเทิร์น','เข้าเล่นไม่ได้','ขอช่องทาง','แจ้งปัญหาไม่ชัดเจน','โบนัสไทม์','ไม่ได้ใช้บัญชีที่สมัคร','ไม่ได้โอนบัญชีเว็บ','ตามยอดฝากบอทไม่จับ','ส่งลิงค์+รูป ที่ไม่เกี่ยวกับทางเว็บ','ปัญหาเกม','เครดิตฟรี','วอลเล็ท'];
@@ -350,7 +352,6 @@ let adminName = '', adminId = null;
 let allConvs = [], filterStatus = 'all', searchText = '';
 let priorityFilter = 'all', curChannel = 'all';
 let unreadCounts = {}, selectedTag = null;
-let pendingImageFile = null;
 let notifyPermission = false;
 let isNoteMode = false;
 let showingHistory = false;
@@ -433,10 +434,7 @@ function startApp() {
     if (logo) { logo.src = LOGO_URL; logo.style.display = 'block'; }
   }
   // สร้าง channel dropdown
-  const sel = document.getElementById('channel-select');
-  if (sel) {
-    sel.innerHTML = CHANNELS.map(c => `<option value="${c.value}">${c.label}</option>`).join('');
-  }
+  updateChannelDropdown();
   requestNotify();
   updateLastSeen();
   setInterval(updateLastSeen, 30000);
@@ -455,8 +453,27 @@ function startApp() {
   }, 60000);
 }
 
-function setChannel(val) {
-  curChannel = val;
+function updateChannelDropdown() {
+  const sel = document.getElementById('channel-select');
+  if (!sel) return;
+  sel.innerHTML = CHANNELS.map(c => {
+    const waitingCount = c.value === 'all'
+      ? allConvs.filter(x => x.status === 'waiting').length
+      : allConvs.filter(x => (x.channel||'line_oa_1') === c.value && x.status === 'waiting').length;
+    const badge = waitingCount > 0 ? ` (${waitingCount})` : '';
+    return `<option value="${c.value}">${c.label}${badge}</option>`;
+  }).join('');
+  sel.value = curChannel;
+}
+
+function goBack() {
+  curConvId = null; curUserId = null; curConvName = null;
+  document.getElementById('chat-area').innerHTML = `
+    <div class="empty-state">
+      <div style="font-size:40px;opacity:0.3;">💬</div>
+      <div>เลือก conversation เพื่อเริ่มตอบ</div>
+    </div>`;
+  document.getElementById('back-btn').style.display = 'none';
   renderConvList();
 }
 
@@ -512,7 +529,13 @@ function setPriorityFilter(priority, el) {
   renderConvList();
 }
 
+function setChannel(val) {
+  curChannel = val;
+  renderConvList();
+}
+
 function renderConvList() {
+  updateChannelDropdown();
   let convs = allConvs;
   if (curChannel !== 'all') convs = convs.filter(c => (c.channel||'line_oa_1') === curChannel);
   if (filterStatus !== 'all') convs = convs.filter(c => c.status === filterStatus);
@@ -566,7 +589,7 @@ function renderConvList() {
   }).join('');
 }
 
-function statusLabel(s) { return {waiting:'ยังไม่ได้อ่าน',active:'รอดำเนินการ',resolved:'สำเร็จ'}[s]||s; }
+function statusLabel(s) { return {waiting:'รอตอบ',active:'กำลังคุย',resolved:'เสร็จแล้ว'}[s]||s; }
 
 function subscribeAll() {
   sb.channel('rt-convs').on('postgres_changes',{event:'*',schema:'public',table:'conversations'},loadConvs).subscribe();
@@ -651,6 +674,7 @@ async function openConv(id, userId, name) {
   loadConvs();
   loadNotes();
   updateNotesProfile();
+  document.getElementById('back-btn').style.display = 'block';
   document.getElementById('msg-input')?.focus();
 }
 
@@ -783,11 +807,11 @@ async function analyzePriority(text) {
         max_tokens: 50,
         messages: [{
           role: 'user',
-          content: `วิเคราะห์ข้อความลูกค้าต่อไปนี้แล้วตอบแค่คำเดียว: ปัญหาเร่งด่วน, ไม่เร่งด่วน, หรือ เครดิตฟรี
+          content: `วิเคราะห์ข้อความลูกค้าต่อไปนี้แล้วตอบแค่คำเดียว: urgent, normal, หรือ low
 
-ปัญหาเร่งด่วน = มีปัญหาเร่งด่วน โกรธ ไม่พอใจ ของไม่มา รอนาน ขอคืนเงิน
-ไม่เร่งด่วน = สอบถามข้อมูล ติดตามงาน ทั่วไป
-เครดิตฟรี = เครดิตฟรี
+urgent = มีปัญหาเร่งด่วน โกรธ ไม่พอใจ ของไม่มา รอนาน ขอคืนเงิน
+normal = สอบถามข้อมูล ติดตามงาน ทั่วไป
+low = ขอบคุณ โอเค รับทราบ ไม่มีปัญหา
 
 ข้อความ: "${text}"
 
@@ -927,6 +951,7 @@ function handleTyping() {
 
 // SEND
 async function sendMsg() {
+  // ถ้ามีรูปรอส่งอยู่
   if (pendingImageFile) {
     const file = pendingImageFile;
     cancelImagePreview();
@@ -939,7 +964,6 @@ async function sendMsg() {
   if (!text || !curConvId) return;
   btn.disabled = true; inp.value = ''; inp.style.height = 'auto';
   const ts = new Date().toISOString();
-
   if (isNoteMode) {
     await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts, is_note:true });
   } else {
@@ -947,7 +971,6 @@ async function sendMsg() {
     await sb.from('conversations').update({ last_message:`[${adminName}] ${text}`, updated_at:ts, assigned_to:adminName }).eq('id', curConvId);
     await pushLine(curUserId, text);
   }
-
   btn.disabled = false; inp.focus();
 }
 
@@ -1124,7 +1147,8 @@ function initOfflineIndicator() {
   if (!navigator.onLine) bar.style.display = 'block';
 }
 
-// PASTE รูป — แสดง preview ก่อนส่ง
+// PASTE รูป — แสดง preview ในช่องพิมพ์ก่อน ไม่ส่งทันที
+let pendingImageFile = null;
 
 document.addEventListener('paste', (e) => {
   if (!curConvId) return;
@@ -1144,6 +1168,7 @@ function showImagePreview(file) {
   if (!inp) return;
   const reader = new FileReader();
   reader.onload = (e) => {
+    // แสดง preview เหนือช่องพิมพ์
     let preview = document.getElementById('img-preview-bar');
     if (!preview) {
       preview = document.createElement('div');
