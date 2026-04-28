@@ -566,7 +566,10 @@ function renderConvList() {
     const avatar = c.picture_url
       ? `<img src="${esc(c.picture_url)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'" alt="">`
       : `<div class="conv-avatar-placeholder">${esc(name).slice(0,2).toUpperCase()}</div>`;
-    return `<div class="conv-item ${c.id===curConvId?'active':''}" onclick="openConv('${c.id}','${c.user_id}','${esc(name).replace(/'/g, '&#39;')}')">
+    return `<div class="conv-item ${c.id===curConvId?'active':''}" onclick="openConvById(this)"
+data-id="${c.id}"
+data-userid="${c.user_id}"
+data-name="${esc(name)}">
       <div style="display:flex;gap:10px;align-items:center;">
         ${avatar}
         <div style="flex:1;min-width:0;">
@@ -1220,6 +1223,14 @@ async function uploadAndSendImage(file) {
       await sb.storage.from('chat-images').remove([fileName]);
     }, 24 * 60 * 60 * 1000);
   } catch(e) { console.error('uploadAndSendImage error', e); }
+}
+
+  function openConvById(el) {
+  const item = el.closest('[data-id]');
+  const id = item.dataset.id;
+  const userId = item.dataset.userid;
+  const name = item.dataset.name;
+  openConv(id, userId, name);
 }
 
 window.onload = () => { checkSession(); initOfflineIndicator(); }
