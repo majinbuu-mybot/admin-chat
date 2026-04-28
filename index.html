@@ -618,7 +618,8 @@ async function openConv(id, userId, name) {
     <div class="chat-header">
       <div class="chat-header-info">
         <div class="chat-header-name">
-        <button onclick="goBack()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 4px 0 0;">←</button>
+        
+        <button onclick="goBack()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:13px;padding:4px 10px;font-family:'Sarabun',sans-serif;">← กลับ</button>
           ${esc(name)}
           <button class="edit-name-btn" onclick="openNicknameModal()" title="เปลี่ยนชื่อ">✏️</button>
           <span class="priority-badge priority-${conv?.priority||'normal'}" id="priority-badge">${pLabel}</span>
