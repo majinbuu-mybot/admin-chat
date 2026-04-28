@@ -78,8 +78,8 @@
   .badge-resolved { background: rgba(139,144,167,0.1); color: var(--text3); }
   .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .p-urgent { background: var(--red); }
-  .p-normal { background: var(--green); }
-  .p-low { background: var(--accent); }
+  .p-normal { background: var(--amber); }
+  .p-low { background: var(--green); }
 
   /* CHAT */
   .chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
@@ -236,7 +236,7 @@
 <!-- LOGIN -->
 <div class="center-screen" id="login-screen" style="display:none;">
   <div class="card">
-    <h1>HumannoiChat</h1>
+    <h1>Humannoi Chat</h1>
     <p>LINE OA Customer Support</p>
     <div class="field"><label>Username</label><input type="text" id="login-user" placeholder="เช่น noon" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
@@ -264,7 +264,7 @@
 <div id="app">
   <div class="topbar">
     <img id="topbar-logo" src="" alt="" style="height:32px;border-radius:6px;display:none;">
-    <div class="topbar-title">Humannoi Chat</div>
+    <div class="topbar-title">Admin Chat</div>
     <div class="topbar-right">
       <span class="urgent-badge" id="urgent-count" style="display:none;">🔴 <span id="urgent-num">0</span> ด่วน</span>
       <div class="topbar-admin"><div class="online-dot"></div><span id="topbar-name">Admin</span></div>
@@ -329,8 +329,9 @@
 const SUPABASE_URL = 'https://difuopwxjyclghlgmvhm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpZnVvcHd4anljbGdobGdtdmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mzg0NTEsImV4cCI6MjA5MTMxNDQ1MX0.nXxVxpYn34BkuGOuznAa6Hft721gZaj1jHSm5D2zm1A';
 const N8N_SEND_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send';
-// เพิ่ม LINE OA ใหม่ตรงนี้ เช่น const N8N_SEND_URL_2 = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send-2';
+const N8N_SEND_URL_2 = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-send-2';
 const N8N_IMAGE_URL = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-image';
+const N8N_IMAGE_URL_2 = 'https://n8n.srv1539428.hstgr.cloud/webhook/line-image-2';
 const EMAIL_DOMAIN = '@admin.humannoi';
 const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
 const LOGO_URL = ''; // ใส่ URL logo ถ้ามี เช่น '/logo.png'
@@ -459,7 +460,7 @@ function updateChannelDropdown() {
     const waitingCount = c.value === 'all'
       ? allConvs.filter(x => x.status === 'waiting').length
       : allConvs.filter(x => (x.channel||'line_oa_1') === c.value && x.status === 'waiting').length;
-    const badge = waitingCount > 0 ? ` (${waitingCount})` : '';
+    const badge = waitingCount > 0 ? ` 🔴 ${waitingCount}` : '';
     return `<option value="${c.value}">${c.label}${badge}</option>`;
   }).join('');
   sel.value = curChannel;
@@ -472,7 +473,6 @@ function goBack() {
       <div style="font-size:40px;opacity:0.3;">💬</div>
       <div>เลือก conversation เพื่อเริ่มตอบ</div>
     </div>`;
-  document.getElementById('back-btn').style.display = 'none';
   renderConvList();
 }
 
@@ -560,7 +560,7 @@ function renderConvList() {
     return;
   }
   document.getElementById('conv-list').innerHTML = convs.map(c => {
-    const unread = unreadCounts[c.id]||0;
+    const unread = c.unread_count || 0;
     const name = c.nickname || c.display_name || c.user_id;
     const pCls = c.priority === 'urgent' ? 'p-urgent' : c.priority === 'low' ? 'p-low' : 'p-normal';
     const avatar = c.picture_url
@@ -596,8 +596,7 @@ function subscribeAll() {
     const m = payload.new;
     if (m.role !== 'customer') return;
     if (m.conversation_id === curConvId) return;
-    unreadCounts[m.conversation_id] = (unreadCounts[m.conversation_id]||0)+1;
-    renderConvList();
+    loadConvs();
     const conv = allConvs.find(c=>c.id===m.conversation_id);
     showNotification('ข้อความใหม่จาก '+(conv?.nickname||conv?.display_name||'ลูกค้า'), m.message||'ส่งไฟล์มา');
   }).subscribe();
@@ -618,8 +617,7 @@ async function openConv(id, userId, name) {
     <div class="chat-header">
       <div class="chat-header-info">
         <div class="chat-header-name">
-        
-        <button onclick="goBack()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:13px;padding:4px 10px;font-family:'Sarabun',sans-serif;">← กลับ</button>
+          <button onclick="goBack()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:12px;padding:4px 10px;font-family:'Sarabun',sans-serif;white-space:nowrap;">← กลับ</button>
           ${esc(name)}
           <button class="edit-name-btn" onclick="openNicknameModal()" title="เปลี่ยนชื่อ">✏️</button>
           <span class="priority-badge priority-${conv?.priority||'normal'}" id="priority-badge">${pLabel}</span>
@@ -671,11 +669,10 @@ async function openConv(id, userId, name) {
       if (p.new.role === 'customer') markRead(p.new.id);
     }).subscribe();
 
-  await sb.from('conversations').update({ status:'active', assigned_to:adminName }).eq('id', id);
+  await sb.from('conversations').update({ status:'active', assigned_to:adminName, unread_count:0 }).eq('id', id);
   loadConvs();
   loadNotes();
   updateNotesProfile();
-  document.getElementById('back-btn').style.display = 'block';
   document.getElementById('msg-input')?.focus();
 }
 
@@ -732,11 +729,6 @@ async function saveNotesName(val) {
   // อัปเดต chat header ด้วย
   const nameEl = document.querySelector('.chat-header-name');
   if (nameEl) nameEl.childNodes[0].textContent = curConvName + ' ';
-
-  const panel = document.getElementById('notes-panel');
-  if (!panel) return;
-  panel.classList.toggle('show');
-  if (panel.classList.contains('show')) loadNotes();
 }
 
 async function loadNotes() {
@@ -918,11 +910,9 @@ function renderMsgHTML(m) {
   } else if (m.file_url) {
     content = `<a href="${esc(m.file_url)}" target="_blank" style="color:var(--accent);">📎 ${esc(m.message||'ไฟล์แนบ')}</a>`;
   } else if (m.message_type === 'image' && m.message_id) {
-   const conv = allConvs.find(c => c.id === m.conversation_id);
-const imageProxy = conv?.channel === 'line_oa_2'
-  ? 'https://n8n.srv1539428.hstgr.cloud/webhook/line-image-2'
-  : N8N_IMAGE_URL;
-const proxyUrl = `${imageProxy}?messageId=${m.message_id}`;
+    const conv = allConvs.find(c => c.id === m.conversation_id);
+    const imgProxy = conv?.channel === 'line_oa_2' ? N8N_IMAGE_URL_2 : N8N_IMAGE_URL;
+    const proxyUrl = `${imgProxy}?messageId=${m.message_id}`;
     content = `<img class="msg-img" src="${proxyUrl}" onclick="viewImg('${proxyUrl}')" alt="รูปภาพ" onerror="this.outerHTML='<span style=\\'color:var(--text3);font-size:12px;\\'>รูปภาพหมดอายุแล้ว</span>'">`;
   } else if (m.message_type === 'sticker' && m.sticker_id) {
     content = `<img style="width:80px;height:80px;" src="https://stickershop.line-scdn.net/stickershop/v1/sticker/${m.sticker_id}/android/sticker.png" alt="สติกเกอร์" onerror="this.outerHTML='🙂'">`;
@@ -931,7 +921,7 @@ const proxyUrl = `${imageProxy}?messageId=${m.message_id}`;
   } else if (m.message_type === 'sticker' || m.message === '[sticker]') {
     content = `<span style="color:var(--text3);font-size:12px;">🙂 สติกเกอร์</span>`;
   } else {
-    content = esc(m.message);
+    content = escHtml(m.message);
   }
   return `<div class="msg-row ${cls}" data-id="${m.id}">
     ${avatarHtml}
@@ -980,8 +970,13 @@ async function sendMsg() {
 }
 
 function getSendUrl(channel) {
-  // เพิ่ม channel ใหม่ตรงนี้ เช่น if (channel === 'line_oa_2') return N8N_SEND_URL_2;
+  if (channel === 'line_oa_2') return N8N_SEND_URL_2;
   return N8N_SEND_URL;
+}
+
+// escHtml ใช้สำหรับแสดงใน UI เท่านั้น ไม่ใช้ตอนส่งข้อความออกไป
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 async function pushLine(userId, text) {
@@ -1153,6 +1148,7 @@ function initOfflineIndicator() {
 }
 
 // PASTE รูป — แสดง preview ในช่องพิมพ์ก่อน ไม่ส่งทันที
+let pendingImageFile = null;
 
 document.addEventListener('paste', (e) => {
   if (!curConvId) return;
