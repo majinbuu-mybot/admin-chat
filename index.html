@@ -460,7 +460,7 @@ function updateChannelDropdown() {
     const waitingCount = c.value === 'all'
       ? allConvs.filter(x => x.status === 'waiting').length
       : allConvs.filter(x => (x.channel||'line_oa_1') === c.value && x.status === 'waiting').length;
-    const badge = waitingCount > 0 ? `  ${waitingCount}` : '';
+    const badge = waitingCount > 0 ? ` ( ${waitingCount} )` : '';
     return `<option value="${c.value}">${c.label}${badge}</option>`;
   }).join('');
   sel.value = curChannel;
