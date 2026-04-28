@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Humannoi/<title>
+<title>Humannoi</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -1148,7 +1148,6 @@ function initOfflineIndicator() {
 }
 
 // PASTE รูป — แสดง preview ในช่องพิมพ์ก่อน ไม่ส่งทันที
-let pendingImageFile = null;
 
 document.addEventListener('paste', (e) => {
   if (!curConvId) return;
