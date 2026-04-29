@@ -440,7 +440,7 @@ function startApp() {
   setInterval(updateLastSeen, 30000);
   loadConvs();
   subscribeAll();
-  setInterval(() => { loadConvs(); pollMessages(); }, 4000);
+  setInterval(() => { loadConvs(); }, 4000);
   const loginTime = Date.now();
   setInterval(() => {
     const elapsed = Date.now() - loginTime;
