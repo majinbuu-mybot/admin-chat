@@ -961,7 +961,6 @@ async function sendMsg() {
   const text = inp.value.trim();
   if (!text || !curConvId) return;
   btn.disabled = true; inp.value = ''; inp.style.height = 'auto';
-  const ts = new Date().toISOString();
   if (isNoteMode) {
     await sb.from('messages').insert({ 
   conversation_id: curConvId, 
@@ -971,8 +970,8 @@ async function sendMsg() {
   is_note: false
 });
   } else {
-    await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts });
-    await sb.from('conversations').update({ last_message:`[${adminName}] ${text}`, updated_at:ts, assigned_to:adminName }).eq('id', curConvId);
+    await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName });
+    await sb.from('conversations').update({ last_message:`[${adminName}] ${text}`, assigned_to:adminName }).eq('id', curConvId);
     await pushLine(curUserId, text);
   }
   btn.disabled = false; inp.focus();
