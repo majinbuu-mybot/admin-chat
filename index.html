@@ -785,7 +785,7 @@ async function saveNotePanel() {
   const text = inp?.value.trim();
   if (!text || !curConvId) return;
   const ts = new Date().toISOString();
-  await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, created_at:ts, is_note:true });
+  await sb.from('messages').insert({ conversation_id:curConvId, role:'admin', message:text, admin_name:adminName, is_note:true });
   inp.value = '';
   loadNotes();
 }
@@ -1213,7 +1213,7 @@ async function uploadAndSendImage(file) {
     const ts = new Date().toISOString();
     await sb.from('messages').insert({
       conversation_id: curConvId, role: 'admin', message: 'รูปภาพ',
-      admin_name: adminName, created_at: ts, file_url: publicUrl, file_type: file.type
+      admin_name: adminName, file_url: publicUrl, file_type: file.type
     });
     await sb.from('conversations').update({ last_message: `[${adminName}] ส่งรูปภาพ`, updated_at: ts, assigned_to: adminName }).eq('id', curConvId);
     // ส่งไป LINE
