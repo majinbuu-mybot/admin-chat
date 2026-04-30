@@ -828,6 +828,7 @@ async function loadMsgs(convId, withHistory) {
     const conv = allConvs.find(c=>c.id===convId);
     if (conv) {
       const { data: pastConvs } = await sb.from('conversations').select('id').eq('user_id',conv.user_id).neq('id',convId);
+      if (convId !== curConvId) return;
       const pastIds = (pastConvs||[]).map(c=>c.id);
       if (pastIds.length) {
         const { data: past } = await sb.from('messages').select('*').in('conversation_id',pastIds).order('created_at',{ascending:true});
